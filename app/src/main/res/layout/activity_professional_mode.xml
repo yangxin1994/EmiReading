@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <com.emi.emireading.widget.view.TitleView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        app:titleText="专业模式">
+    </com.emi.emireading.widget.view.TitleView>
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivDebug"
+        style="@style/setting_style"
+        app:labelDrawable="@mipmap/danbiao"
+        app:labelText="水表和通道板调试"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivReadMeterSetting"
+        style="@style/setting_style"
+        app:labelDrawable="@mipmap/danbiao"
+        app:labelText="抄表设置"
+        />
+
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivExportSetting"
+        style="@style/setting_style"
+        app:labelDrawable="@mipmap/danbiao"
+        app:labelText="文件导出设置"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivOtherSetting"
+        style="@style/setting_style"
+        app:labelDrawable="@mipmap/danbiao"
+        app:labelText="其他设置"
+        />
+</LinearLayout>

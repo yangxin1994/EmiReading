@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="EmiBaseAdapter_viewHolder_support" type="id"/>
+    <item name="EmiBaseAdapter_swiping_support" type="id"/>
+    <item name="EmiBaseAdapter_dragging_support" type="id"/>
+    <item name="EmiBaseAdapter_dataBinding_support" type="id"/>
+    <item name="version_check_version_dialog_commit" type="id">0x66</item>
+    <item name="version_check__failed_dialog_retry" type="id">0x67</item>
+    <item name="version_check__failed_dialog_cancel" type="id">0x68</item>
+    <item name="version_check__version_dialog_cancel" type="id">0x69</item>
+    <item name="version_check__loading_dialog_cancel" type="id">0x70</item>
+
+</resources>

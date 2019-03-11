@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.emi.emireading.widget.view.TitleView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        app:titleText="导出设置">
+    </com.emi.emireading.widget.view.TitleView>
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivExportMode"
+        style="@style/setting_style"
+        app:itemType="arrowType"
+        app:labelDrawable="@mipmap/debugs"
+        app:labelText="当前导出模式"
+        app:onColor="@color/colorPrimary"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivKeepSame"
+        style="@style/setting_style"
+        app:itemType="toggleType"
+        app:labelDrawable="@mipmap/debugs"
+        app:labelText="原格式输出"
+        android:visibility="gone"
+        app:onColor="@color/colorPrimary"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivFilterWaterUsage"
+        style="@style/setting_style"
+        app:itemType="toggleType"
+        app:labelDrawable="@mipmap/debugs"
+        app:labelText="过滤用水量"
+        app:onColor="@color/colorPrimary"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivIsCreateDate"
+        style="@style/setting_style"
+        app:itemType="toggleType"
+        app:labelDrawable="@mipmap/debugs"
+        app:labelText="是否导出日期"
+        app:onColor="@color/colorPrimary"
+        />
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivExportType"
+        style="@style/setting_style"
+        app:itemType="arrowType"
+        app:labelDrawable="@mipmap/debugs"
+        app:labelText="导出类型"
+        app:onColor="@color/colorPrimary"
+        />
+</LinearLayout>

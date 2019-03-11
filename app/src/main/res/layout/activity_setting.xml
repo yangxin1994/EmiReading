@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <com.emi.emireading.widget.view.TitleView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        app:titleText="设置">
+    </com.emi.emireading.widget.view.TitleView>
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/miv_debugMode"
+        style="@style/setting_style"
+        app:itemType="toggleType"
+        app:labelDrawable="@mipmap/debugs"
+        app:labelText="调试模式"
+        app:onColor="@color/colorPrimary"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/miv_bluetoothSetting"
+        style="@style/setting_style"
+        android:visibility="gone"
+        app:labelDrawable="@mipmap/bluetooths"
+        app:labelText="蓝牙设置"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/miv_isNeedChannel"
+        style="@style/setting_style"
+        app:itemType="toggleType"
+        app:labelDrawable="@mipmap/tiaoshikaiguan"
+        app:labelText="是否读通道号"
+        app:onColor="@color/colorPrimary"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivSkipFile"
+        style="@style/setting_style"
+        app:itemType="toggleType"
+        app:labelDrawable="@mipmap/danbiao"
+        app:labelText="跳过文件选择"
+        app:onColor="@color/colorPrimary"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/miv_channelProtocol"
+        style="@style/setting_style"
+        app:labelDrawable="@mipmap/channels"
+        app:labelText="通道板类型"
+        app:rightLabelText="@string/app_name"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/miv_currentCity"
+        style="@style/setting_style"
+        android:visibility="gone"
+        app:labelDrawable="@mipmap/citys"
+        app:labelText="当前城市"
+        app:rightLabelText="@string/app_name"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/miv_meterType"
+        style="@style/setting_style"
+        android:visibility="gone"
+        app:labelDrawable="@mipmap/codes"
+        app:labelText="读表设置"
+        app:rightLabelText="@string/app_name"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/channel_board_debugging"
+        style="@style/setting_style"
+        android:visibility="gone"
+        app:labelDrawable="@mipmap/tongdaoban"
+        app:labelText="通道板调试"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/single_table_maintenance"
+        style="@style/setting_style"
+        android:visibility="gone"
+        app:labelDrawable="@mipmap/danbiao"
+        app:labelText="单表维护"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/miv_clearData"
+        style="@style/setting_style"
+        app:labelDrawable="@mipmap/clears"
+        app:labelText="数据管理"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/miv_clearCreateFile"
+        style="@style/setting_style"
+        android:visibility="gone"
+        app:labelDrawable="@mipmap/shebei"
+        app:labelText="清空生成的数据文件"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/miv_Help"
+        style="@style/setting_style"
+        android:visibility="gone"
+        app:labelDrawable="@mipmap/helps"
+        app:labelText="帮助"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/miv_exportSetting"
+        style="@style/setting_style"
+        android:visibility="gone"
+        app:labelDrawable="@mipmap/ic_about"
+        app:labelText="导出设置"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivEmiDebugging"
+        style="@style/setting_style"
+        app:labelDrawable="@mipmap/ic_about"
+        app:labelText="专业模式"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/miv_About"
+        style="@style/setting_style"
+        app:labelDrawable="@mipmap/ic_about"
+        app:labelText="关于"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/miv_clearNeedFile"
+        style="@style/setting_style"
+        android:visibility="gone"
+        app:labelDrawable="@mipmap/shebei"
+        app:labelText="清空所需文件夹"
+        />
+
+
+</LinearLayout>

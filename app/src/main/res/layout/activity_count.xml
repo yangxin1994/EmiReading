@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:src="@mipmap/icon_back" />
+
+        <TextView
+            android:id="@+id/tvChannelCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="数据统计"
+            android:textColor="#fff"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvShowPhoto"
+            android:text="显示照片"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textColor="@color/white"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_height="match_parent"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvHasRead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/firmcode"
+        android:ems="10"
+        android:gravity="center"
+        android:text="0"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/tvAbnormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/meterdata"
+        android:ems="10"
+        android:gravity="center"
+        android:text="0"
+        android:textSize="20dp"/>
+
+    <TextView
+        android:id="@+id/tvAllMeter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tvHasRead"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/rl"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:text="0"
+        android:textSize="20dp" />
+
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/meteraddr"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:text="水表总数："
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/meteraddr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView4"
+        android:layout_below="@+id/tvAllMeter"
+        android:layout_marginTop="20dp"
+        android:text="未抄户数："
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+    <TextView
+        android:id="@+id/firmcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/meteraddr"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:text="已抄户数："
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <View
+        android:layout_below="@id/firmcode"
+        android:layout_marginTop="@dimen/dp_10"
+        android:id="@+id/lineHorizon"
+        android:background="@color/gray"
+        android:layout_width="match_parent"
+        android:layout_height="1dp">
+    </View>
+    <TextView
+        android:id="@+id/tvSuccessLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/lineHorizon"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:text="正常户数："
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+    <TextView
+        android:id="@+id/tvSuccess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:ems="10"
+        android:layout_alignTop="@+id/tvSuccessLabel"
+        android:gravity="center"
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="20dp" />
+    <TextView
+        android:id="@+id/meterdata"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvSuccessLabel"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:text="异常户数："
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+        android:id="@+id/tvFailedCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvAbnormal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:text="失败户数："
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvFailedCount"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:text="用水总量："
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/tvNoRead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/meteraddr"
+        android:layout_alignLeft="@+id/tvHasRead"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/tvFailed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:ems="10"
+        android:layout_alignTop="@+id/tvFailedCount"
+        android:gravity="center"
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/tvAllWaterUseAge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView3"
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_alignLeft="@+id/tvAbnormal"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="20dp" />
+</RelativeLayout>

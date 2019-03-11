@@ -1,0 +1,12 @@
+{
+  "KEY_USER_ID": "编号",
+  "KEY_LAST_DATA":"上月抄码",
+  "KEY_CURRENT_DATA":"本次抄码",
+  "KEY_CURRENT_USAGE":"用水量",
+  "KEY_READ_STATE":"已抄标志",
+  "KEY_CHANNEL_ADDRESS":"水表状态",
+  "KEY_USER_NAME": "用户名",
+  "KEY_USER_ADDRESS": "安装地址",
+  "KEY_WATER_ID": "抄表员",
+  "KEY_FIRM_CODE": "卡号"
+}

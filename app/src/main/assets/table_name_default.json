@@ -1,0 +1,16 @@
+{
+  "KEY_USER_ID": "用户编号",
+  "KEY_WATER_ID": "用水ID",
+  "KEY_USER_NAME": "用户名称",
+  "KEY_USER_ADDRESS": "用户地址",
+  "KEY_LAST_DATA": "上次读数",
+  "KEY_LAST_USAGE": "上次用水量",
+  "KEY_CURRENT_DATA": "本次读数",
+  "KEY_CURRENT_USAGE": "本次水量",
+  "KEY_READ_DATE": "抄表日期",
+  "KEY_CHANNEL_NUMBER": "通道板号",
+  "KEY_METER_ADDRESS": "表地址",
+  "KEY_CHANNEL_ADDRESS": "通道板地址",
+  "KEY_FIRM_CODE": "厂商代码",
+  "KEY_READ_STATE": "抄表状态"
+}

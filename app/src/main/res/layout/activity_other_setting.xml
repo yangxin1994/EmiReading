@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <com.emi.emireading.widget.view.TitleView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        app:titleText="其他设置">
+    </com.emi.emireading.widget.view.TitleView>
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivShowPeopleRecord"
+        style="@style/setting_style"
+        app:itemType="toggleType"
+        app:labelDrawable="@mipmap/debugs"
+        app:labelText="是否补录"
+        app:onColor="@color/colorPrimary"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivFileEdit"
+        style="@style/setting_style"
+        app:itemType="toggleType"
+        app:labelDrawable="@mipmap/danbiao"
+        app:labelText="修改文件"
+        app:onColor="@color/colorPrimary"
+        />
+
+    <!--  设置联系方式-->
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivSetContact"
+        style="@style/setting_style"
+        app:itemType="normalType"
+        app:labelDrawable="@mipmap/ic_about"
+        app:labelText="设置联系方式"
+        />
+
+    <!--  设置联系方式-->
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivRemark"
+        style="@style/setting_style"
+        app:itemType="normalType"
+        app:labelDrawable="@mipmap/ic_about"
+        app:labelText="设置备注(联系人、站点名称等)"
+        />
+</LinearLayout>

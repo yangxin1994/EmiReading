@@ -1,0 +1,73 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion '27.0.3'
+
+    lintOptions {
+        abortOnError false
+    }
+
+
+
+    defaultConfig {
+        applicationId "com.emi.emireading"
+        minSdkVersion 16
+        targetSdkVersion 26
+        versionCode 2
+        versionName "3.0.2"
+        multiDexEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            lintOptions {
+                checkReleaseBuilds false
+                abortOnError false
+            }
+        }
+        debug {
+            lintOptions {
+                checkReleaseBuilds false
+                abortOnError false
+            }
+        }
+    }
+
+
+}
+
+
+dependencies {
+    implementation 'com.annimon:stream:1.0.3'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'org.litepal.android:core:2.0.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.4.1'
+    implementation 'com.squareup.okio:okio:1.9.0'
+    implementation 'com.google.code.gson:gson:2.7'
+    implementation "com.android.support:appcompat-v7:$supportLib"
+    implementation "com.android.support:cardview-v7:$supportLib"
+    implementation files('libs/fastjson-1.2.31.jar')
+    implementation 'org.greenrobot:eventbus:3.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation project(':material-spinner-1.0.5')
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.0'
+    androidTestImplementation 'com.squareup.leakcanary:leakcanary-android:1.5'
+    implementation 'com.squareup.leakcanary:leakcanary-android:1.5'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    implementation files('libs/commons-lang-2.6.jar')
+    implementation files('libs/jxl.jar')
+    implementation files('../poishadow/libs/poishadow-all.jar')
+    implementation 'com.pnikosis:materialish-progress:1.0'
+    implementation 'com.android.support:design:26.1.0'
+    //图片加载 4.X
+    implementation('com.github.bumptech.glide:glide:4.7.1') {
+        exclude group: 'com.android.support'
+    }
+}

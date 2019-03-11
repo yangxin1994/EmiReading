@@ -1,0 +1,59 @@
+[
+  {
+    "cityName": "合肥",
+    "exportFileType": ".txt",
+    "splitChar": "$",
+    "1": "KEY_USER_ID",
+    "2": "KEY_LAST_DATA",
+    "3": "KEY_CURRENT_DATA",
+    "4": "KEY_CURRENT_USAGE"
+  },
+  {
+    "cityName": "庐江",
+    "exportFileType": ".xls",
+    "1": "KEY_USER_ID",
+    "2": "KEY_LAST_DATA",
+    "3": "KEY_CURRENT_DATA",
+    "4": "KEY_CURRENT_USAGE",
+    "5": "KEY_READ_STATE",
+    "6": "KEY_CHANNEL_ADDRESS",
+    "7": "KEY_READ_DATE",
+    "8": "KEY_USER_NAME",
+    "9": "KEY_USER_ADDRESS",
+    "10": "KEY_WATER_ID",
+    "11": "KEY_FIRM_CODE"
+  },
+  {
+    "cityName": "翼迈",
+    "exportFileType": ".xls",
+    "1": "KEY_USER_ID",
+    "2": "KEY_CURRENT_DATA",
+    "4": "KEY_USER_ADDRESS",
+    "5": "KEY_METER_ADDRESS",
+    "3": "KEY_USER_NAME",
+    "6": "KEY_CHANNEL_NUMBER",
+    "7": "KEY_READ_STATE",
+    "8": "KEY_CURRENT_USAGE",
+    "9": "KEY_READ_DATE"
+  },
+  {
+    "cityName": "阜阳",
+    "exportFileType": ".xls",
+    "1": "KEY_USER_ID",
+    "2": "KEY_USER_ADDRESS",
+    "3": "KEY_CURRENT_DATA",
+    "4": "KEY_READ_DATE"
+  },
+  {
+    "cityName": "泗县",
+    "exportFileType": ".xls",
+    "1": "KEY_USER_ID",
+    "2": "KEY_CURRENT_DATA",
+    "4": "KEY_USER_ADDRESS",
+    "5": "KEY_METER_ADDRESS",
+    "3": "KEY_USER_NAME",
+    "6": "KEY_CHANNEL_NUMBER",
+    "7": "KEY_CURRENT_USAGE",
+    "8": "KEY_READ_DATE"
+  }
+]

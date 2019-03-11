@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <com.emi.emireading.widget.view.TitleView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        app:titleText="抄表设置">
+    </com.emi.emireading.widget.view.TitleView>
+
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivMeterTypeSetting"
+        style="@style/setting_style"
+        app:labelDrawable="@mipmap/codes"
+        app:labelText="水表类型"
+        app:rightLabelText="@string/app_name"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivReadingDelaySetting"
+        style="@style/setting_style"
+        app:labelDrawable="@mipmap/danbiao"
+        app:labelText="抄表延时"
+        />
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivAutoReadTypeSetting"
+        style="@style/setting_style"
+        app:labelDrawable="@mipmap/danbiao"
+        app:labelText="自动抄表类型"
+        />
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivAutoRepeatReadSetting"
+        style="@style/setting_style"
+        app:labelDrawable="@mipmap/danbiao"
+        app:labelText="自动补抄次数"
+        />
+    <com.emi.emireading.widget.view.MenuItemView
+        android:id="@+id/mivSkipFile"
+        style="@style/setting_style"
+        app:onColor="@color/colorPrimary"
+        app:labelDrawable="@mipmap/danbiao"
+        app:itemType="toggleType"
+        app:labelText="跳过文件选择"
+        />
+</LinearLayout>

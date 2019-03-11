@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <declare-styleable name="FloatingActionButton">
+        <attr name="fab_colorPressed" format="color" />
+        <attr name="fab_colorNormal" format="color" />
+        <attr name="fab_colorRipple" format="color" />
+        <attr name="fab_shadow" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="EmiProgressBar">
+        <attr name="textSize" format="dimension"/>
+        <attr name="loadingColor" format="color"/>
+        <attr name="stopColor" format="color"/>
+        <attr name="radius" format="dimension"/>
+        <attr name="progressBorderWidth" format="dimension"/>
+    </declare-styleable>
+    <!-- 自定义星期 View -->
+    <declare-styleable name="EmiWeekView">
+        <attr name="ewv_textColor" format="color|reference"/>
+        <attr name="ewv_textSize" format="dimension|reference"/>
+    </declare-styleable>
+
+    <!-- 自定义日历 View -->
+    <declare-styleable name="EmiCalendarView">
+        <attr name="ecv_textColor" format="color|reference"/>
+        <attr name="ecv_selectTextColor" format="color|reference"/>
+        <attr name="ecv_textSize" format="dimension|reference"/>
+        <attr name="ecv_selectTextSize" format="dimension|reference"/>
+        <attr name="ecv_dayBackground" format="reference"/>
+        <attr name="ecv_selectDayBackground" format="reference"/>
+        <attr name="ecv_dateFormatPattern" format="string|reference"/>
+        <attr name="ecv_isChangeDateStatus" format="boolean|reference"/>
+    </declare-styleable>
+
+    <!--标题栏属性-->
+    <declare-styleable name="TitleView">
+        <attr name="leftButtonText" format="string|reference"/>
+        <attr name="leftButtonTextColor" format="color|reference"/>
+        <attr name="leftButtonTextSize" format="dimension|reference"/>
+        <attr name="leftButtonImage" format="integer|reference"/>
+        <attr name="titleText" format="string|reference"/>
+        <attr name="titleColor" format="color|reference"/>
+        <attr name="goBack" format="boolean"/>
+        <attr name="onClickLeft" format="string"/>
+        <attr name="onClickRight" format="string"/>
+        <attr name="titleSize" format="dimension|reference"/>
+        <attr name="rightButtonText" format="string|reference"/>
+        <attr name="rightButtonTextColor" format="color|reference"/>
+        <attr name="rightButtonTextSize" format="dimension|reference"/>
+        <attr name="rightButtonImage" format="color|reference"/>
+        <attr name="isShowLeftIcon" format="boolean"/>
+        <attr name="isShowRightIcon" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="MenuItemView">
+        <!-- 基本的参数设置-->
+        <attr name="labelDrawable" format="reference" />
+        <attr name="labelDrawableSize" format="dimension"/>
+        <attr name="drawPadding" format="dimension" />
+        <attr name="labelText" format="string" />
+        <attr name="leftTextColor" format="color" />
+        <attr name="rightLabelText" format="string" />
+        <!--文字与图片的距离-->
+        <attr name="labelTextPaddingLeft" format="dimension"/>
+        <attr name="labelIconPaddingLeft" format="dimension" />
+        <attr name="leftTextSize" format="dimension" />
+        <attr name="rightTextSize" format="dimension"/>
+        <attr name="rightTextColor" format="color"/>
+        <attr name="arrowDrawable" format="reference" />
+        <!--默认为5dp（基本不用该属性）-->
+        <attr name="rightIconPaddingRight" format="dimension" />
+        <attr name="arrowSize" format="dimension" />
+        <attr name="arrowColor" format="color" />
+        <attr name="itemType" format="enum">
+            <enum name="normalType" value="0" />
+            <enum name="arrowType"  value="1" />
+            <enum name="toggleType" value="2" />
+        </attr>
+        <!-- 当类型为switch时，绘制switch用到的参数-->
+        <attr name="toggleWidth" format="dimension" />
+        <attr name="toggleHeight" format="dimension" />
+        <attr name="borderWidth" format="dimension" />
+        <attr name="areaColor" format="color" />
+        <attr name="offColor" format="color" />
+        <attr name="onColor" format="color" />
+        <attr name="handlerColor" format="color" />
+        <attr name="animate" format="boolean" />
+        <attr name="defaultOn" format="boolean" />
+        <!-- 下分割线的绘制属性 -->
+        <attr name="dividerColor" format="reference|color" />
+        <attr name="dividerWidth" format="dimension" />
+        <attr name="dividerVisibility" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ToggleButton">
+        <attr name="buttonWidth" format="dimension" />
+        <attr name="buttonHeight" format="dimension" />
+        <attr name="buttonBorderWidth" format="dimension" />
+        <attr name="buttonOffColor" format="dimension" />
+        <attr name="buttonOnColor" format="dimension" />
+        <attr name="buttonHandlerColor" format="color" />
+        <attr name="buttonAnimate" format="boolean" />
+        <attr name="buttonDefaultOn" format="boolean" />
+    </declare-styleable>
+
+
+    <declare-styleable name="Rotate3dAnimation">
+        <attr name="rollType" format="enum">
+            <enum name="x" value="0"/>
+            <enum name="y" value="1"/>
+            <enum name="z" value="2"/>
+        </attr>
+        <attr name="fromDeg" format="float" />
+        <attr name="toDeg" format="float" />
+        <attr name="pivotX" format="fraction"/>
+        <attr name="pivotY" format="fraction" />
+    </declare-styleable>
+
+    <attr name="sweet_alert_bg_drawable" format="reference" />
+    <attr name="sweet_alert_title_text_color" format="color|reference" />
+    <attr name="sweet_alert_content_text_color" format="color|reference" />
+
+    <declare-styleable name="WheelView">
+        <attr name="wv_textSize" format="integer" />
+        <attr name="wv_lineSpace" format="float" />
+        <attr name="wv_centerTextColor" format="integer" />
+        <attr name="wv_outerTextColor" format="integer" />
+        <attr name="wv_dividerTextColor" format="integer" />
+        <attr name="wv_itemsVisibleCount" format="integer" />
+        <attr name="wv_isLoop" format="boolean" />
+        <attr name="wv_initialPosition" format="integer" />
+        <attr name="wv_scaleX" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="TestView">
+        <attr name="tv_titleSize" format="dimension" />
+    </declare-styleable>
+
+
+    <declare-styleable name="SubsamplingScaleImageView">
+        <attr name="src" format="reference"/>
+        <attr name="assetName" format="string"/>
+        <attr name="panEnabled" format="boolean"/>
+        <attr name="zoomEnabled" format="boolean"/>
+        <attr name="quickScaleEnabled" format="boolean"/>
+        <attr name="tileBackgroundColor" format="color"/>
+    </declare-styleable>
+    <declare-styleable name="EmiCheckBox">
+        <attr name="checkbox_color" format="color"/>
+        <attr name="unchecked_color" format="color"/>
+        <attr name="disabled_color" format="color"/>
+        <attr name="border_color" format="color"/>
+        <attr name="checkbox_size" format="dimension"/>
+        <attr name="invisible_in_unchecked_state" format="boolean"/>
+        <attr name="checked_drawable" format="reference"/>
+        <attr name="unchecked_drawable" format="reference"/>
+        <attr name="show_border_in_check_state" format="boolean"/>
+    </declare-styleable>
+
+</resources>

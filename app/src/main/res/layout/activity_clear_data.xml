@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+<com.emi.emireading.widget.view.TitleView
+    app:titleText="清除数据"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/toolbar_height">
+</com.emi.emireading.widget.view.TitleView>
+
+    <com.emi.emireading.widget.view.MenuItemView
+        style="@style/setting_style"
+        android:id="@+id/miv_clearDataBase"
+        app:labelText="清空数据库"
+        app:itemType="normalType"
+        />
+    <com.emi.emireading.widget.view.MenuItemView
+        style="@style/setting_style"
+        android:id="@+id/miv_clearResultFile"
+        app:itemType="normalType"
+        app:labelText="清空抄表结果"
+        />
+    <com.emi.emireading.widget.view.MenuItemView
+        style="@style/setting_style"
+        app:itemType="normalType"
+        android:id="@+id/miv_clearReadingFile"
+        app:labelText="清空抄表文件"
+        />
+
+    <com.emi.emireading.widget.view.MenuItemView
+        style="@style/setting_style"
+        app:itemType="normalType"
+        android:id="@+id/mivDataList"
+        android:visibility="gone"
+        app:labelText="数据列表"
+        />
+</LinearLayout>

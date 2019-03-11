@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <com.emi.emireading.widget.view.TitleView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:id="@+id/titleView"
+        app:titleText="选择时间">
+    </com.emi.emireading.widget.view.TitleView>
+
+    <TextView
+        android:id="@+id/tvCurrentDate"
+        style="@style/Base.TextAppearance.AppCompat.Medium.Inverse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        />
+
+    <com.emi.emireading.widget.view.calendar.EmiWeekView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@color/blue"
+        app:ewv_textColor="@android:color/white"
+        app:ewv_textSize="@dimen/sp_14"
+        />
+
+    <com.emi.emireading.widget.view.calendar.EmiCalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@android:color/white"
+        app:ecv_dayBackground="@drawable/bg_day_un_selected"
+        app:ecv_selectDayBackground="@drawable/bg_day_selected"
+        app:ecv_selectTextColor="@android:color/white"
+        app:ecv_textColor="#333333"
+        app:ecv_textSize="14sp"
+        />
+
+    <LinearLayout
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/btnLastMonth"
+            android:layout_margin="@dimen/dp_10"
+            android:background="@drawable/bt_select_bg"
+            android:text="上个月"
+            android:textColor="@color/white"/>
+
+        <Button
+            android:layout_margin="@dimen/dp_10"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/btnNextMonth"
+            android:background="@drawable/bt_select_bg"
+            android:text=" 下个月"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:background="@color/white"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <com.emi.emireading.widget.view.TitleView
+        app:titleText="抄表查询"
+        android:id="@+id/titleView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height">
+
+    </com.emi.emireading.widget.view.TitleView>
+    <LinearLayout
+        android:id="@+id/linear_info"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tvUserId"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:maxLines="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:text="用户编号"/>
+
+        <TextView
+            android:id="@+id/tvAddress"
+            android:gravity="center"
+            android:maxLines="1"
+            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:text="地址"/>
+
+        <TextView
+            android:id="@+id/tvMeterAddress"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:maxLines="1"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:text="表地址"/>
+
+        <TextView
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:id="@+id/tvCurrentUseAge"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="本次用水"/>
+
+        <TextView
+            android:text="状态"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/text_gray" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tv_data"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="暂无数据" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_userInfoList"
+            android:background="@android:color/darker_gray"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+
+    </FrameLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/text_gray" />
+
+    <LinearLayout
+        android:id="@+id/cr_linear1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/bt_normal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:text="全部"
+            style="@style/buttonStyle"
+            />
+
+        <Button
+            android:id="@+id/bt_unormal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:text="异常"
+            style="@style/buttonStyle"
+            />
+
+        <Button
+            android:id="@+id/bt_fail"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:text="失败"
+            style="@style/buttonStyle"
+            />
+
+        <Button
+            android:id="@+id/bt_rewrite"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:text="补录"
+            style="@style/buttonStyle"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/cr_linear1"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/count"
+            style="@style/buttonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:text="统计查询"
+            />
+
+
+
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,15 @@
+[
+  {
+    "cityName": "翼迈",
+    "exportFileType": ".xls"
+  },{
+    "cityName": "合肥",
+    "exportFileType": ".txt",
+    "splitChar": "$"
+  },
+  {
+    "cityName": "泗县",
+    "exportFileType": ".xls"
+  }
+]
+

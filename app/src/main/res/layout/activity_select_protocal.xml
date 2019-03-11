@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <com.emi.emireading.widget.view.TitleView
+        app:titleText="通道板类型"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height">
+    </com.emi.emireading.widget.view.TitleView>
+
+    <RelativeLayout
+        android:id="@+id/relay_7833"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="普通通道板"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/iv7833"
+            android:src="@mipmap/iv_select"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+    <LinearLayout
+        android:padding="@dimen/dp_5"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/line_gray_little"
+            />
+    </LinearLayout>
+    <TextView
+        android:text="通道板类型选择"
+        android:textSize="12sp"
+        android:padding="@dimen/dp_10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:padding="@dimen/dp_5"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/line_gray_little"
+            />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/relay_1001"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="特殊通道板"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/iv1001"
+            android:src="@mipmap/iv_select"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+</LinearLayout>

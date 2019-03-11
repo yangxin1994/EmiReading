@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+<com.emi.emireading.widget.view.TitleView
+    app:titleText="抄表延时设置"
+    android:id="@+id/titleView"
+    android:layout_width="match_parent"
+    app:rightButtonText="保存"
+    android:layout_height="@dimen/toolbar_height"/>
+
+    <RadioGroup
+        android:layout_marginStart="@dimen/dp_10"
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:padding="@dimen/dp_5"
+        android:layout_height="wrap_content"
+        android:minHeight="40dp"
+        android:orientation="vertical" >
+
+
+
+        <RadioButton
+            android:id="@+id/rb500"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_5"
+            android:layout_width="wrap_content"
+            android:text="0.8秒" />
+
+        <RadioButton
+            android:id="@+id/rb1000"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_5"
+            android:layout_width="wrap_content"
+            android:text="1秒" />
+
+        <RadioButton
+            android:id="@+id/rb2000"
+            android:layout_marginTop="@dimen/dp_10"
+            android:padding="@dimen/dp_5"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="2秒" />
+    </RadioGroup>
+</LinearLayout>
