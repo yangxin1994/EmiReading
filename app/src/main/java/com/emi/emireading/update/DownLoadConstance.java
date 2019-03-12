@@ -12,9 +12,6 @@ public class DownLoadConstance {
     public static final String DOWN_LOAD_APK_KEY = "downloadApk";
     public static final String DOWN_LOAD_TYPE= "application/vnd.android.package-archive";
     public static final String DOWN_LOAD_MSG_FAILED= "下载失败";
-    /**
-     * 后台输入的app包名
-     */
-    public static final String APP_NAME = "emireading";
+
 
 }

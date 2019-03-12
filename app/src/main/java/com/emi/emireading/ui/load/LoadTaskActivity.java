@@ -22,7 +22,7 @@ import com.emi.emireading.adpter.CommonSelectEmiAdapter;
 import com.emi.emireading.core.BaseActivity;
 import com.emi.emireading.core.adapter.BaseEmiAdapter;
 import com.emi.emireading.core.common.PreferenceUtils;
-import com.emi.emireading.core.common.ThreadPoolManager;
+import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.config.EmiConfig;
 import com.emi.emireading.core.log.LogUtil;
 import com.emi.emireading.core.utils.CommonViewHolder;
@@ -63,7 +63,7 @@ import static com.emi.emireading.widget.view.dialog.multidialog.EmiMultipleProgr
  * @Email: 971613168@qq.com
  */
 
-public class LoadTaskActivityNew extends BaseActivity implements View.OnClickListener {
+public class LoadTaskActivity extends BaseActivity implements View.OnClickListener {
     private Context mContext;
     private boolean hasFile;
     private static final int MSG_ERROR_CODE = -1;
@@ -240,7 +240,7 @@ public class LoadTaskActivityNew extends BaseActivity implements View.OnClickLis
         //将window视图显示在myButton下面
         popupWindow.showAsDropDown(tvChooseArea);
         ListView listView = view.findViewById(R.id.listView);
-        listView.setAdapter(new ListViewAdapter(LoadTaskActivityNew.this, dirNameList));
+        listView.setAdapter(new ListViewAdapter(LoadTaskActivity.this, dirNameList));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -361,7 +361,7 @@ public class LoadTaskActivityNew extends BaseActivity implements View.OnClickLis
 
         @Override
         public void handleMessage(Message msg) {
-            final LoadTaskActivityNew activity = (LoadTaskActivityNew) mWeakReference.get();
+            final LoadTaskActivity activity = (LoadTaskActivity) mWeakReference.get();
             if (activity != null) {
                 switch (msg.what) {
                     case PROGRESS_CODE:

@@ -4,9 +4,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.emi.emireading.R;
-import com.emi.emireading.core.adapter.BaseViewHolder;
 import com.emi.emireading.core.adapter.BaseEmiAdapter;
-import com.emi.emireading.core.log.LogUtil;
+import com.emi.emireading.core.adapter.BaseViewHolder;
 import com.emi.emireading.core.utils.EmiStringUtil;
 import com.emi.emireading.entities.UserInfo;
 
@@ -34,7 +33,6 @@ public class ChannelInfoEmiAdapter extends BaseEmiAdapter<UserInfo, BaseViewHold
         } else {
             helper.setText(R.id.tvChannelAddress, "安装地址：" + userInfo.getChannelAddress());
         }
-        LogUtil.d("当前的channel"+userInfo.channel);
         if (EmiStringUtil.isEmpty(userInfo.channel)) {
             helper.setImageResource(R.id.ivReadState, R.mipmap.image_label_no_read);
         } else {

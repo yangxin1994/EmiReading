@@ -1,4 +1,4 @@
-package com.emi.emireading.core.common;
+package com.emi.emireading.core.threadpool;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;

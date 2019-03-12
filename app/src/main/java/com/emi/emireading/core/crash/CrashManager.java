@@ -79,7 +79,10 @@ public final class CrashManager {
         return instance;
     }
 
-
+    /**
+     * 异常处理初始化
+     * @param context
+     */
     public static void init(Context context) {
         try {
             if (context == null) {
@@ -89,7 +92,6 @@ public final class CrashManager {
                     LogUtil.e("API版本过低");
                 }
 
-                //INSTALL!
                 Thread.UncaughtExceptionHandler oldHandler = Thread.getDefaultUncaughtExceptionHandler();
 
                 if (oldHandler != null && oldHandler.getClass().getName().startsWith(CAOC_HANDLER_PACKAGE_NAME)) {
@@ -101,19 +103,16 @@ public final class CrashManager {
 
                     application = (Application) context.getApplicationContext();
 
-                    //We define a default exception handler that does what we want so it can be called from Crashlytics/ACRA
                     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
                         @Override
                         public void uncaughtException(Thread thread, final Throwable throwable) {
                             Log.e(TAG, "App已经崩溃，执行crashmanager的UncaughtExceptionHandler", throwable);
-
                             if (errorActivityClass == null) {
                                 errorActivityClass = guessErrorActivityClass(application);
                             }
 
                             if (isStackTraceLikelyConflictive(throwable, errorActivityClass)) {
                                 Log.e(TAG, "您的应用程序类或您的错误活动已崩溃，自定义活动将不会启动！");
-
                             } else {
                                 if (launchErrorActivityWhenInBackground || !isInBackground) {
                                     final Intent intent = new Intent(application, errorActivityClass);
@@ -166,17 +165,14 @@ public final class CrashManager {
                             public void onActivityStarted(Activity activity) {
                                 currentlyStartedActivities++;
                                 isInBackground = (currentlyStartedActivities == 0);
-                                //do nothing
                             }
 
                             @Override
                             public void onActivityResumed(Activity activity) {
-                                //do nothing
                             }
 
                             @Override
                             public void onActivityPaused(Activity activity) {
-                                //do nothing
                             }
 
                             @Override

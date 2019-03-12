@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * @author :zhoujian
- * @description : zj
+ * @description : 水表类型设置
  * @company :翼迈科技
  * @date: 2017年08月18日下午 02:39
  * @Email: 971613168@qq.com

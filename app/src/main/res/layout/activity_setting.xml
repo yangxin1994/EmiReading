@@ -80,13 +80,6 @@
         app:labelText="通道板调试"
         />
 
-    <com.emi.emireading.widget.view.MenuItemView
-        android:id="@+id/single_table_maintenance"
-        style="@style/setting_style"
-        android:visibility="gone"
-        app:labelDrawable="@mipmap/danbiao"
-        app:labelText="单表维护"
-        />
 
     <com.emi.emireading.widget.view.MenuItemView
         android:id="@+id/miv_clearData"

@@ -17,13 +17,6 @@ public class DialogProperties {
     public int selectMode;
 
     public int selectType;
-    /**
-     * The Parent/Root Directory. List of Files are populated from here. Can be set
-     * to any readable directory. /sdcard is the default location.
-     * <p>
-     * Eg. /sdcard
-     * Eg. /mnt
-     */
     public File root;
 
     public File errorDir;

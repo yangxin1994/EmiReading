@@ -21,9 +21,6 @@ import java.io.File;
  */
 public final class AppUtils {
 
-    /**
-     * Don't let anyone instantiate this class.
-     */
     private AppUtils() {
         throw new Error("Do not need instantiate!");
     }

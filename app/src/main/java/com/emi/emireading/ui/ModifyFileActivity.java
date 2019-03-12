@@ -18,7 +18,7 @@ import com.emi.emireading.adpter.CommonSelectEmiAdapter;
 import com.emi.emireading.common.EmiUtils;
 import com.emi.emireading.core.BaseActivity;
 import com.emi.emireading.core.adapter.BaseEmiAdapter;
-import com.emi.emireading.core.common.ThreadPoolManager;
+import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.config.EmiConfig;
 import com.emi.emireading.core.config.EmiConstants;
 import com.emi.emireading.core.db.MyOperator;

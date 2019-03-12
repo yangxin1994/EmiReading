@@ -1,15 +1,22 @@
 package com.emi.emireading.core.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
+import android.net.Uri;
+import android.os.Build;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.emi.emireading.EmiReadingApplication;
 import com.emi.emireading.R;
 import com.emi.emireading.core.config.EmiConstants;
 import com.emi.emireading.core.log.LogUtil;
 import com.emi.emireading.entities.FileEntity;
 import com.emi.emireading.entities.FileInfo;
+
+import org.apache.commons.lang.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,6 +27,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,7 +39,7 @@ import java.util.Locale;
 
 /**
  * @author :zhoujian
- * @description : 文件工具类
+ * @description : zj
  * @company :翼迈科技
  * @date: 2017年7月16日下午 02:00
  * @Email: 971613168@qq.com
@@ -382,6 +390,19 @@ public class FileUtil {
         }
     }
 
+    public static String getDirName(String filePath) {
+        // 判空操作必须要有 , 处理方式不唯一 , 根据实际情况可选其一 。
+        if (filePath == null) {
+            return "";
+        }
+        int count = StringUtils.countMatches(filePath, File.separator);
+        if (count < 1) {
+            return filePath;
+        }
+        int startIndex = StringUtils.ordinalIndexOf(filePath, File.separator, count - 1);
+        int endIndex = StringUtils.ordinalIndexOf(filePath, File.separator, count);
+        return filePath.substring(startIndex + 1, endIndex);
+    }
 
     public static boolean isTxtFile(String filePath) {
         File file = new File(filePath);
@@ -401,27 +422,6 @@ public class FileUtil {
             LogUtil.e(TAG, "该文件不存在");
         }
         return file.exists();
-    }
-
-    /**
-     * 获取某一文件目录下所有文件名(没有用递归，只获取第一层路径文件名)
-     *
-     * @param path
-     * @return
-     */
-    public static List<String> getFileNameListByPath(String path) {
-        List<String> fileNameList = new ArrayList<>();
-        if (TextUtils.isEmpty(path)) {
-            return fileNameList;
-        }
-        File file = new File(path);
-        if (file.exists() && file.isDirectory()) {
-            File[] fileArray = file.listFiles();
-            for (File currentFile : fileArray) {
-                fileNameList.add(currentFile.getName());
-            }
-        }
-        return fileNameList;
     }
 
 
@@ -586,6 +586,110 @@ public class FileUtil {
                 return !pathname.isHidden();
             }
         });
-
     }
+
+    public static int copy(String fromFile, String toFile) {
+        //要复制的文件目录
+        File[] currentFiles;
+        File root = new File(fromFile);
+        //如同判断SD卡是否存在或者文件是否存在
+        //如果不存在则 return出去
+        if (!root.exists()) {
+            return -1;
+        }
+        //如果存在则获取当前目录下的全部文件 填充数组
+        currentFiles = root.listFiles();
+        //目标目录
+        File targetDir = new File(toFile);
+        //创建目录
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
+        //遍历要复制该目录下的全部文件
+        for (int i = 0; i < currentFiles.length; i++) {
+            //如果当前项为子目录 进行递归
+            if (currentFiles[i].isDirectory()) {
+                copy(currentFiles[i].getPath() + File.separator, toFile + currentFiles[i].getName() + File.separator);
+            } else {
+                //如果当前项为文件则进行文件拷贝
+                copySdcardFile(currentFiles[i].getPath(), toFile + currentFiles[i].getName());
+            }
+        }
+        return 0;
+    }
+
+
+    /**
+     * 要复制的目录下的所有非子目录(文件夹)文件拷贝
+     *
+     * @param fromFile
+     * @param toFile
+     * @return
+     */
+    public static int copySdcardFile(String fromFile, String toFile) {
+        try {
+            InputStream fosfrom = new FileInputStream(fromFile);
+            OutputStream fosto = new FileOutputStream(toFile);
+            byte[] bt = new byte[1024];
+            int c;
+            while ((c = fosfrom.read(bt)) > 0) {
+                fosto.write(bt, 0, c);
+            }
+            fosfrom.close();
+            fosto.close();
+            return 0;
+        } catch (Exception ex) {
+            return -1;
+        }
+    }
+
+    /**
+     * 获取一个用于打开文本文件的intent
+     *
+     * @param path
+     * @return
+     */
+    public static Intent getTextFileIntent(String path) {
+        File file = new File(path);
+        Intent intent = new Intent("android.intent.action.VIEW");
+        intent.addCategory("android.intent.category.DEFAULT");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Uri uri;
+        Context context = EmiReadingApplication.getAppContext();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            uri = Uri.fromFile(file);
+        } else {
+            uri = FileProvider.getUriForFile(context, context.getResources().getString(R.string.provider_authorities), file);
+        }
+
+        intent.setDataAndType(uri, "text/plain");
+        return intent;
+    }
+
+
+    /**
+     * 获取一个用于打开Excel文件的intent
+     *
+     * @param path
+     * @return
+     */
+    public static Intent getExcelFileIntent(String path) {
+        File file = new File(path);
+        Intent intent = new Intent("android.intent.action.VIEW");
+        intent.addCategory("android.intent.category.DEFAULT");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Uri uri;
+        Context context = EmiReadingApplication.getAppContext();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            uri = Uri.fromFile(file);
+        } else {
+            uri = FileProvider.getUriForFile(context, context.getResources().getString(R.string.provider_authorities), file);
+        }
+        intent.setDataAndType(uri, "application/vnd.ms-excel");
+        return intent;
+    }
+
+
 }

@@ -19,7 +19,7 @@ import com.emi.emireading.adpter.UserListEmiAdapter;
 import com.emi.emireading.common.EmiUtils;
 import com.emi.emireading.core.BaseActivity;
 import com.emi.emireading.core.adapter.BaseEmiAdapter;
-import com.emi.emireading.core.common.ThreadPoolManager;
+import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.config.EmiConfig;
 import com.emi.emireading.core.config.EmiConstants;
 import com.emi.emireading.core.log.LogUtil;
@@ -48,7 +48,7 @@ import static com.emi.emireading.core.config.EmiConstants.STATE_PEOPLE_RECORDING
 import static com.emi.emireading.core.config.EmiConstants.STATE_WARNING;
 import static com.emi.emireading.ui.ChannelListActivity.EXTRA_CHANNEL;
 import static com.emi.emireading.ui.ChannelListActivity.SKIP_TAG_AUTO_READ_METER;
-import static com.emi.emireading.ui.MeterQueryActivityNew.REQUEST_CODE_DETAIL_INFO;
+import static com.emi.emireading.ui.MeterQueryActivity.REQUEST_CODE_DETAIL_INFO;
 import static com.emi.emireading.ui.UserInfoDetailActivity.EXTRA_BUNDLE;
 import static com.emi.emireading.ui.UserInfoDetailActivity.EXTRA_EDIT_DATA_LIST;
 

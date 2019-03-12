@@ -44,7 +44,7 @@
             android:textSize="12sp" />
     </LinearLayout>
 
-    <com.emi.emireading.widget.view.EmiCheckBox
+    <com.emi.emireading.widget.filepicker.view.MaterialCheckbox
         android:id="@+id/file_mark"
         android:layout_width="@dimen/checkbox_dimens"
         android:layout_height="@dimen/checkbox_dimens"

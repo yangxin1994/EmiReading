@@ -18,7 +18,7 @@ import java.io.File;
 
 /**
  * @author :zhoujian
- * @description : 翼迈文件管理
+ * @description : 系统相关工具类
  * @company :翼迈科技
  * @date 2019年01月23日下午 05:11
  * @Email: 971613168@qq.com
@@ -43,7 +43,7 @@ public final class SystemUtil {
     }
 
     /**
-     * get root directory
+     * 获取根目录
      *
      * @param applicationContext
      * @return

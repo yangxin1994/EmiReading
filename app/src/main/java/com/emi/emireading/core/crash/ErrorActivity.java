@@ -29,8 +29,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import static com.emi.emireading.core.config.EmiConstants.APP_NAME;
 import static com.emi.emireading.core.config.UrlConstants.UPLOAD_CRASH_URL;
-import static com.emi.emireading.update.DownLoadConstance.APP_NAME;
 
 
 /**
@@ -50,6 +50,7 @@ public class ErrorActivity extends Activity {
     private static final String PARAMS_CRASH_DATE = "crashDate";
 
     public static final String PARAMETER_APP_NAME = "appName";
+    public static final String PARAMETER_VERSION_CODE = "versionCode";
     String errorInformation = "";
 
     @Override

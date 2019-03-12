@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-import com.emi.emireading.core.common.ThreadPoolManager;
+import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.log.LogTool;
 import com.emi.emireading.core.log.LogUtil;
 import com.emi.emireading.core.log.encryption.IEncryption;

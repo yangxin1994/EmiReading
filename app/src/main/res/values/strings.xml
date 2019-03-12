@@ -5,7 +5,7 @@
 
     <string name="input_error">输入有误</string>
     <string name="select_count">已选%1$s</string>
-    <string name="send">发送(%1$s)</string>
+    <string name="send">分享</string>
     <string name="all_count">共%1$s个文件</string>
     <string name="login">登录</string>
     <string name="reading">正在读取…</string>
@@ -113,7 +113,7 @@
     <string name="version_check_download_fail_retry">下载失败是否重试？</string>
     <string name="version_check_download_finish">下载完成，点击安装</string>
     <string name="version_check_download_fail">下载失败，点击重试</string>
-
+    <string name="copyToReadingPath">拷贝到抄表目录</string>
     <!--文件管理-->
     <string name="cancel_button_label">取消</string>
     <string name="choose_button_label">选择</string>

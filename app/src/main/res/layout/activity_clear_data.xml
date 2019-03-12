@@ -33,7 +33,6 @@
         style="@style/setting_style"
         app:itemType="normalType"
         android:id="@+id/mivDataList"
-        android:visibility="gone"
         app:labelText="数据列表"
         />
 </LinearLayout>

@@ -21,7 +21,6 @@ import com.emi.emireading.core.utils.FileUtil;
 import com.emi.emireading.core.utils.ToastUtil;
 import com.emi.emireading.ui.AboutActivity;
 import com.emi.emireading.ui.debug.ChannelDebugActivityNew;
-import com.emi.emireading.ui.debug.SingleMeterDebugActivityTest;
 import com.emi.emireading.update.DownloadApk;
 import com.emi.emireading.widget.view.MenuItemView;
 import com.emi.emireading.widget.view.dialog.CustomDialog;
@@ -58,10 +57,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private MenuItemView miv_debugMode;
     private MenuItemView miv_Help;
     private MenuItemView miv_About;
-    private MenuItemView miv_clearNeedFile;
     private MenuItemView miv_clearCreateFile;
     private MenuItemView miv_channl_debug;
-    private MenuItemView miv_single_table;
     private MenuItemView miv_isNeedChannel;
     private MenuItemView mivEmiDebugging;
     private MenuItemView mivSkipFile;
@@ -92,7 +89,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         miv_Help = (MenuItemView) findViewById(R.id.miv_Help);
         miv_About = (MenuItemView) findViewById(R.id.miv_About);
         miv_channl_debug = (MenuItemView) findViewById(R.id.channel_board_debugging);
-        miv_single_table = (MenuItemView) findViewById(R.id.single_table_maintenance);
         miv_isNeedChannel = (MenuItemView) findViewById(R.id.miv_isNeedChannel);
         mivSkipFile = findViewById(R.id.mivSkipFile);
         miv_exportSetting = findViewById(R.id.miv_exportSetting);
@@ -102,7 +98,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         miv_clearData.setOnClickListener(this);
         miv_clearCreateFile.setOnClickListener(this);
         miv_channl_debug.setOnClickListener(this);
-        miv_single_table.setOnClickListener(this);
         miv_exportSetting.setOnClickListener(this);
         mivEmiDebugging.setOnClickListener(this);
         miv_debugMode.setOnClickListener(this);
@@ -193,10 +188,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 break;
             case R.id.channel_board_debugging:
                 startActivity(new Intent(mContext, ChannelDebugActivityNew.class));
-                break;
-            case R.id.single_table_maintenance:
-                startActivity(new Intent(mContext, SingleMeterDebugActivityTest.class));
-                //                openActivity(mContext, TestActivity.class);
                 break;
             case R.id.miv_exportSetting:
                 openActivity(mContext, ExportSettingActivity.class);
@@ -364,7 +355,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         if (EmiUtils.isDebugMode()) {
             miv_meterType.setVisibility(View.GONE);
             miv_channl_debug.setVisibility(View.GONE);
-            miv_single_table.setVisibility(View.GONE);
             miv_isNeedChannel.setVisibility(View.VISIBLE);
             mivSkipFile.setVisibility(View.VISIBLE);
         } else {
@@ -372,7 +362,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             miv_meterType.setVisibility(View.GONE);
             miv_currentCity.setVisibility(View.GONE);
             miv_channl_debug.setVisibility(View.GONE);
-            miv_single_table.setVisibility(View.GONE);
             miv_isNeedChannel.setVisibility(View.GONE);
             mivSkipFile.setVisibility(View.GONE);
         }

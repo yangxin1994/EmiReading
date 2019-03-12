@@ -22,11 +22,11 @@ import com.emi.emireading.core.request.response.ToastUtils;
 import com.emi.emireading.core.utils.EmiStringUtil;
 import com.emi.emireading.core.utils.FileUtil;
 import com.emi.emireading.entities.LoadStrategy;
-import com.emi.emireading.ui.AutoReadMeterActivityNew;
+import com.emi.emireading.ui.AutoReadMeterActivity;
 import com.emi.emireading.ui.FileListActivity;
-import com.emi.emireading.ui.MeterQueryActivityNew;
+import com.emi.emireading.ui.MeterQueryActivity;
 import com.emi.emireading.ui.TaskQueryActivity;
-import com.emi.emireading.ui.load.LoadTaskActivityNew;
+import com.emi.emireading.ui.load.LoadTaskActivity;
 import com.emi.emireading.ui.setting.SettingActivity;
 import com.emi.emireading.widget.view.emimenu.EmiMenu;
 import com.emi.emireading.widget.view.emimenu.EmiMenuItem;
@@ -194,14 +194,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.linLoadTask:
-                openActivity(this, LoadTaskActivityNew.class);
+                openActivity(this, LoadTaskActivity.class);
                 break;
             case R.id.linDataQuery:
-                openActivity(this, MeterQueryActivityNew.class);
+                openActivity(this, MeterQueryActivity.class);
                 break;
             case R.id.linAutoReading:
                 if (IS_SKIP_SELECT_FILE) {
-                    openActivity(this, AutoReadMeterActivityNew.class);
+                    openActivity(this, AutoReadMeterActivity.class);
                 } else {
                     openActivity(this, FileListActivity.class);
                 }

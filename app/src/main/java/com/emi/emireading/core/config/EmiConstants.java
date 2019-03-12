@@ -269,4 +269,11 @@ public class EmiConstants {
     public static final String EMI_ROOT_PATH = "EMICB";
     public static final String MICRO_MSG = "MicroMsg" + File.separator + DOWNLOAD;
 
+    public static final String EXTRA_READING_PATH_FLAG = "EXTRA_READING_PATH_FLAG";
+
+    /**
+     * 后台输入的app包名
+     */
+    public static final String APP_NAME = "emireading";
+
 }

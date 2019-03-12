@@ -28,8 +28,8 @@ import com.emi.emireading.core.animation.SlideInBottomAnimation;
 import com.emi.emireading.core.animation.SlideInLeftAnimation;
 import com.emi.emireading.core.animation.SlideInRightAnimation;
 import com.emi.emireading.core.bean.IExpandable;
-import com.emi.emireading.core.loadmore.LoadMoreView;
-import com.emi.emireading.core.loadmore.SimpleLoadMoreView;
+import com.emi.emireading.core.loadmore.AbstractLoadMoreView;
+import com.emi.emireading.core.loadmore.SimpleAbstractLoadMoreView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -59,7 +59,7 @@ public abstract class BaseEmiAdapter<T, K extends BaseViewHolder> extends Recycl
     private boolean mNextLoadEnable = false;
     private boolean mLoadMoreEnable = false;
     private boolean mLoading = false;
-    private LoadMoreView mLoadMoreView = new SimpleLoadMoreView();
+    private AbstractLoadMoreView mAbstractLoadMoreView = new SimpleAbstractLoadMoreView();
     private RequestLoadMoreListener mRequestLoadMoreListener;
     private boolean mEnableLoadMoreEndClick = false;
 
@@ -303,8 +303,8 @@ public abstract class BaseEmiAdapter<T, K extends BaseViewHolder> extends Recycl
      *
      * @param loadingView
      */
-    public void setLoadMoreView(LoadMoreView loadingView) {
-        this.mLoadMoreView = loadingView;
+    public void setAbstractLoadMoreView(AbstractLoadMoreView loadingView) {
+        this.mAbstractLoadMoreView = loadingView;
     }
 
     /**
@@ -316,7 +316,7 @@ public abstract class BaseEmiAdapter<T, K extends BaseViewHolder> extends Recycl
         if (mRequestLoadMoreListener == null || !mLoadMoreEnable) {
             return 0;
         }
-        if (!mNextLoadEnable && mLoadMoreView.isLoadEndMoreGone()) {
+        if (!mNextLoadEnable && mAbstractLoadMoreView.isLoadEndMoreGone()) {
             return 0;
         }
         if (mData.size() == 0) {
@@ -361,11 +361,11 @@ public abstract class BaseEmiAdapter<T, K extends BaseViewHolder> extends Recycl
         }
         mLoading = false;
         mNextLoadEnable = false;
-        mLoadMoreView.setLoadMoreEndGone(gone);
+        mAbstractLoadMoreView.setLoadMoreEndGone(gone);
         if (gone) {
             notifyItemRemoved(getLoadMoreViewPosition());
         } else {
-            mLoadMoreView.setLoadMoreStatus(LoadMoreView.STATUS_END);
+            mAbstractLoadMoreView.setLoadMoreStatus(AbstractLoadMoreView.STATUS_END);
             notifyItemChanged(getLoadMoreViewPosition());
         }
     }
@@ -379,7 +379,7 @@ public abstract class BaseEmiAdapter<T, K extends BaseViewHolder> extends Recycl
         }
         mLoading = false;
         mNextLoadEnable = true;
-        mLoadMoreView.setLoadMoreStatus(LoadMoreView.STATUS_DEFAULT);
+        mAbstractLoadMoreView.setLoadMoreStatus(AbstractLoadMoreView.STATUS_DEFAULT);
         notifyItemChanged(getLoadMoreViewPosition());
     }
 
@@ -391,7 +391,7 @@ public abstract class BaseEmiAdapter<T, K extends BaseViewHolder> extends Recycl
             return;
         }
         mLoading = false;
-        mLoadMoreView.setLoadMoreStatus(LoadMoreView.STATUS_FAIL);
+        mAbstractLoadMoreView.setLoadMoreStatus(AbstractLoadMoreView.STATUS_FAIL);
         notifyItemChanged(getLoadMoreViewPosition());
     }
 
@@ -411,7 +411,7 @@ public abstract class BaseEmiAdapter<T, K extends BaseViewHolder> extends Recycl
             }
         } else {
             if (newLoadMoreCount == 1) {
-                mLoadMoreView.setLoadMoreStatus(LoadMoreView.STATUS_DEFAULT);
+                mAbstractLoadMoreView.setLoadMoreStatus(AbstractLoadMoreView.STATUS_DEFAULT);
                 notifyItemInserted(getLoadMoreViewPosition());
             }
         }
@@ -469,7 +469,7 @@ public abstract class BaseEmiAdapter<T, K extends BaseViewHolder> extends Recycl
             mNextLoadEnable = true;
             mLoadMoreEnable = true;
             mLoading = false;
-            mLoadMoreView.setLoadMoreStatus(LoadMoreView.STATUS_DEFAULT);
+            mAbstractLoadMoreView.setLoadMoreStatus(AbstractLoadMoreView.STATUS_DEFAULT);
         }
         mLastPosition = -1;
         notifyDataSetChanged();
@@ -757,15 +757,15 @@ public abstract class BaseEmiAdapter<T, K extends BaseViewHolder> extends Recycl
     }
 
     private K getLoadingView(ViewGroup parent) {
-        View view = getItemView(mLoadMoreView.getLayoutId(), parent);
+        View view = getItemView(mAbstractLoadMoreView.getLayoutId(), parent);
         K holder = createBaseViewHolder(view);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mLoadMoreView.getLoadMoreStatus() == LoadMoreView.STATUS_FAIL) {
+                if (mAbstractLoadMoreView.getLoadMoreStatus() == AbstractLoadMoreView.STATUS_FAIL) {
                     notifyLoadMoreToLoading();
                 }
-                if (mEnableLoadMoreEndClick && mLoadMoreView.getLoadMoreStatus() == LoadMoreView.STATUS_END) {
+                if (mEnableLoadMoreEndClick && mAbstractLoadMoreView.getLoadMoreStatus() == AbstractLoadMoreView.STATUS_END) {
                     notifyLoadMoreToLoading();
                 }
             }
@@ -777,10 +777,10 @@ public abstract class BaseEmiAdapter<T, K extends BaseViewHolder> extends Recycl
      * The notification starts the callback and loads more
      */
     public void notifyLoadMoreToLoading() {
-        if (mLoadMoreView.getLoadMoreStatus() == LoadMoreView.STATUS_LOADING) {
+        if (mAbstractLoadMoreView.getLoadMoreStatus() == AbstractLoadMoreView.STATUS_LOADING) {
             return;
         }
-        mLoadMoreView.setLoadMoreStatus(LoadMoreView.STATUS_DEFAULT);
+        mAbstractLoadMoreView.setLoadMoreStatus(AbstractLoadMoreView.STATUS_DEFAULT);
         notifyItemChanged(getLoadMoreViewPosition());
     }
 
@@ -907,7 +907,7 @@ public abstract class BaseEmiAdapter<T, K extends BaseViewHolder> extends Recycl
     public void onBindViewHolder(K holder, int positions) {
         //Add up fetch logic, almost like load more, but simpler.
         autoUpFetch(positions);
-        //Do not move position, need to change before LoadMoreView binding
+        //Do not move position, need to change before AbstractLoadMoreView binding
         autoLoadMore(positions);
         int viewType = holder.getItemViewType();
 
@@ -916,7 +916,7 @@ public abstract class BaseEmiAdapter<T, K extends BaseViewHolder> extends Recycl
                 convert(holder, mData.get(holder.getLayoutPosition() - getHeaderLayoutCount()));
                 break;
             case LOADING_VIEW:
-                mLoadMoreView.convert(holder);
+                mAbstractLoadMoreView.convert(holder);
                 break;
             case HEADER_VIEW:
                 break;
@@ -1401,10 +1401,10 @@ public abstract class BaseEmiAdapter<T, K extends BaseViewHolder> extends Recycl
         if (position < getItemCount() - mPreLoadNumber) {
             return;
         }
-        if (mLoadMoreView.getLoadMoreStatus() != LoadMoreView.STATUS_DEFAULT) {
+        if (mAbstractLoadMoreView.getLoadMoreStatus() != AbstractLoadMoreView.STATUS_DEFAULT) {
             return;
         }
-        mLoadMoreView.setLoadMoreStatus(LoadMoreView.STATUS_LOADING);
+        mAbstractLoadMoreView.setLoadMoreStatus(AbstractLoadMoreView.STATUS_LOADING);
         if (!mLoading) {
             mLoading = true;
             if (getRecyclerView() != null) {

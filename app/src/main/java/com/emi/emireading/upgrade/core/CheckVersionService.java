@@ -12,7 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.emi.emireading.R;
-import com.emi.emireading.core.common.ThreadPoolManager;
+import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.log.LogUtil;
 import com.emi.emireading.core.request.OkHttpUtils;
 import com.emi.emireading.core.request.response.BaseResponseHandler;

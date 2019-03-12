@@ -8,12 +8,12 @@ import android.widget.RelativeLayout;
 
 import com.emi.emireading.R;
 import com.emi.emireading.core.BaseActivity;
-import com.emi.emireading.ui.setting.EmiFileListActivity;
 
 import java.io.File;
 
 import static com.emi.emireading.core.config.EmiConstants.EMI_ROOT_PATH;
 import static com.emi.emireading.core.config.EmiConstants.EXTRA_PATH;
+import static com.emi.emireading.core.config.EmiConstants.EXTRA_READING_PATH_FLAG;
 import static com.emi.emireading.core.config.EmiConstants.MICRO_MSG;
 import static com.emi.emireading.core.config.EmiConstants.QQ_PATH;
 import static com.emi.emireading.core.config.EmiConstants.TENCENT;
@@ -35,6 +35,11 @@ public class PathSelectActivity extends BaseActivity implements View.OnClickList
     private String qq = TENCENT + File.separator + QQ_PATH;
     private String microMsg = TENCENT + File.separator + MICRO_MSG;
     private String emi = EMI_ROOT_PATH;
+    /**
+     * 是否是抄表路径
+     */
+    private boolean readingPathFlag;
+
 
     @Override
     protected int getContentLayout() {
@@ -66,14 +71,17 @@ public class PathSelectActivity extends BaseActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.rlQQ:
                 path = Environment.getExternalStorageDirectory() + File.separator + qq;
+                readingPathFlag = false;
                 skip();
                 break;
             case R.id.rlMicroMsg:
                 path = Environment.getExternalStorageDirectory() + File.separator + microMsg;
+                readingPathFlag = false;
                 skip();
                 break;
             case R.id.rlEmi:
                 path = Environment.getExternalStorageDirectory() + File.separator + emi;
+                readingPathFlag = true;
                 skip();
                 break;
             default:
@@ -89,13 +97,13 @@ public class PathSelectActivity extends BaseActivity implements View.OnClickList
 
 
     private void showDir() {
-        visible(rlQQ, checkFile(qq));
-        visible(rlMicroMsg, checkFile(microMsg));
-        visible(rlEmi, checkFile(emi));
+        setVisibility(rlQQ, checkFile(qq));
+        setVisibility(rlMicroMsg, checkFile(microMsg));
+        setVisibility(rlEmi, checkFile(emi));
     }
 
 
-    private void visible(View v, boolean b) {
+    private void setVisibility(View v, boolean b) {
         if (b) {
             v.setVisibility(View.VISIBLE);
         } else {
@@ -106,8 +114,9 @@ public class PathSelectActivity extends BaseActivity implements View.OnClickList
 
     private void skip() {
         Intent intent = new Intent();
-        intent.setClass(mContext, EmiFileListActivity.class);
+        intent.setClass(mContext, EmiFileManageActivity.class);
         intent.putExtra(EXTRA_PATH, path);
+        intent.putExtra(EXTRA_READING_PATH_FLAG, readingPathFlag);
         startActivity(intent);
     }
 }

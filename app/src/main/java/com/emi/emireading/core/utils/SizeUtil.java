@@ -3,7 +3,13 @@ package com.emi.emireading.core.utils;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
-
+/**
+ * @author :zhoujian
+ * @description : 尺寸工具类
+ * @company :翼迈科技
+ * @date 2018年04月19日下午 03:00
+ * @Email: 971613168@qq.com
+ */
 public class SizeUtil {
     public static DisplayMetrics getDisplayMetrics() {
         return Resources.getSystem().getDisplayMetrics();

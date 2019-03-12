@@ -15,9 +15,7 @@ import com.emi.emireading.adpter.FileListEmiAdapter;
 import com.emi.emireading.common.EmiUtils;
 import com.emi.emireading.core.BaseActivity;
 import com.emi.emireading.core.adapter.BaseEmiAdapter;
-import com.emi.emireading.core.common.ThreadPoolManager;
-import com.emi.emireading.core.config.EmiConfig;
-import com.emi.emireading.core.config.EmiConstants;
+import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.log.LogUtil;
 import com.emi.emireading.core.utils.FileUtil;
 import com.emi.emireading.core.utils.ToastUtil;
@@ -29,7 +27,6 @@ import com.emi.emireading.widget.view.dialog.sweetalert.SweetAlertDialog;
 
 import org.litepal.LitePal;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -98,60 +95,6 @@ public class FileListActivity extends BaseActivity {
                 });
             }
         });
-
-
-    }
-
-
-  /*  *//**
-     * 获取加载过的文件名
-     *
-     * @return
-     *//*
-    private ArrayList<String> getTempFileName() {
-        //        String currentFileName;
-        ArrayList<String> tempFileList = new ArrayList<>();
-        //        File file = new File(EmiConfig.TempPath);
-        List<SavedFileInfo> fileInfoList = LitePal.findAll(SavedFileInfo.class);
-        for (SavedFileInfo savedFileInfo : fileInfoList) {
-            if (FileUtil.getFileSuffix(savedFileInfo.savedFileName).contains(EmiConfig.CURRENT_SUFFIX)) {
-                tempFileList.add(savedFileInfo.savedFileName);
-            }
-            LogUtil.w("找到的文件名：" + savedFileInfo.savedFileName);
-        }
-       *//* File[] files = file.listFiles();
-        if (files != null) {
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].isFile() && checkIsTempFile((files[i]))) {
-                    LogUtil.i("得到的文件名：" + files[i].getName());
-                    currentFileName = files[i].getName();
-                    currentFileName = FileUtil.clearFileSuffix(currentFileName) + EmiConfig.CURRENT_SUFFIX;
-                    tempFileList.add(currentFileName);
-                }
-            }
-        }*//*
-        return tempFileList;
-    }*/
-
-
-    /**
-     * 判断是否是缓存文件
-     */
-    private boolean checkIsTempFile(File file) {
-        String fileName = file.getName();
-        if (file.isDirectory()) {
-            return false;
-        }
-        LogUtil.d("文件名：" + FileUtil.getFileSuffix(file.getName().toLowerCase()));
-        //判断是否是txt文件
-        if (!(EmiConstants.SUFFIX_TXT.equals(FileUtil.getFileSuffix(file.getName().toLowerCase())))) {
-            return false;
-        }
-        fileName = FileUtil.clearFileSuffix(fileName) + EmiConfig.CURRENT_SUFFIX;
-        LogUtil.i("处理过后的文件名：" + fileName);
-        boolean isExist = getSqOperator().checkFileIsExist(fileName);
-        LogUtil.d("checkIsTempFile::" + isExist);
-        return isExist;
     }
 
 
@@ -249,7 +192,7 @@ public class FileListActivity extends BaseActivity {
     private void doSkip(String selectFileName) {
         Intent intent = new Intent();
         if (EmiUtils.isNeedChannel()) {
-            intent.setClass(FileListActivity.this, AutoReadMeterActivityNew.class);
+            intent.setClass(FileListActivity.this, AutoReadMeterActivity.class);
         } else {
             intent.setClass(FileListActivity.this, ChannelListActivity.class);
             intent.putExtra(PREF_SKIP_TAG, SKIP_TAG_AUTO_READ_METER);

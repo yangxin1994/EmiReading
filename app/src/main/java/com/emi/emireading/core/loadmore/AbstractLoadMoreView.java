@@ -5,7 +5,14 @@ import android.support.annotation.LayoutRes;
 
 import com.emi.emireading.core.adapter.BaseViewHolder;
 
-public abstract class LoadMoreView {
+/**
+ * @author :zhoujian
+ * @description : 加载更多
+ * @company :翼迈科技
+ * @date: 2017年07月25日上午 11:56
+ * @Email: 971613168@qq.com
+ */
+public abstract class AbstractLoadMoreView {
 
     public static final int STATUS_DEFAULT = 1;
     public static final int STATUS_LOADING = 2;
@@ -45,8 +52,8 @@ public abstract class LoadMoreView {
                 visibleLoadFail(holder, false);
                 visibleLoadEnd(holder, false);
                 break;
-                default:
-                    break;
+            default:
+                break;
         }
     }
 
@@ -59,7 +66,7 @@ public abstract class LoadMoreView {
     }
 
     private void visibleLoadEnd(BaseViewHolder holder, boolean visible) {
-        final int loadEndViewId=getLoadEndViewId();
+        final int loadEndViewId = getLoadEndViewId();
         if (loadEndViewId != 0) {
             holder.setVisible(loadEndViewId, visible);
         }
@@ -69,18 +76,21 @@ public abstract class LoadMoreView {
         this.mLoadMoreEndGone = loadMoreEndGone;
     }
 
-    public final boolean isLoadEndMoreGone(){
-        if(getLoadEndViewId()==0){
+    public final boolean isLoadEndMoreGone() {
+        if (getLoadEndViewId() == 0) {
             return true;
         }
-        return mLoadMoreEndGone;}
+        return mLoadMoreEndGone;
+    }
 
 
     @Deprecated
-    public boolean isLoadEndGone(){return mLoadMoreEndGone;}
+    public boolean isLoadEndGone() {
+        return mLoadMoreEndGone;
+    }
 
     /**
-     * load more layout
+     * 获取加载更多布局id
      *
      * @return
      */
@@ -88,7 +98,7 @@ public abstract class LoadMoreView {
     int getLayoutId();
 
     /**
-     * loading view
+     * 加载中...的 view
      *
      * @return
      */
@@ -96,7 +106,7 @@ public abstract class LoadMoreView {
     int getLoadingViewId();
 
     /**
-     * load fail view
+     * 加载失败View
      *
      * @return
      */
@@ -104,13 +114,12 @@ public abstract class LoadMoreView {
     int getLoadFailViewId();
 
     /**
-     * load end view, you can return 0
+     * 加载结束的view 可以返回0
      *
      * @return
      */
     protected abstract @IdRes
     int getLoadEndViewId();
-
 
 
 }

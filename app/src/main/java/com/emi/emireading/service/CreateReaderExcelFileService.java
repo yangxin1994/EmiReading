@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.emi.emireading.EmiReadingApplication;
-import com.emi.emireading.core.common.ThreadPoolManager;
+import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.config.EmiConstants;
 import com.emi.emireading.core.db.MyOperator;
 import com.emi.emireading.core.db.SQLiteHelper;
@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * @author :zhoujian
- * @description : zj
+ * @description : 生成excel服务
  * @company :翼迈科技
  * @date 2018年10月16日下午 01:51
  * @Email: 971613168@qq.com

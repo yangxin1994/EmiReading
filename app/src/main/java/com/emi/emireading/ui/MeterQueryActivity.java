@@ -39,7 +39,7 @@ import com.emi.emireading.common.EmiUtils;
 import com.emi.emireading.core.BaseActivity;
 import com.emi.emireading.core.adapter.BaseEmiAdapter;
 import com.emi.emireading.core.common.PreferenceUtils;
-import com.emi.emireading.core.common.ThreadPoolManager;
+import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.config.EmiConfig;
 import com.emi.emireading.core.config.EmiConstants;
 import com.emi.emireading.core.config.UrlConstants;
@@ -137,7 +137,7 @@ import static java.lang.Integer.parseInt;
  * @Email: 971613168@qq.com
  */
 
-public class MeterQueryActivityNew extends BaseActivity implements View.OnClickListener, OnMenuItemClickListener<IconPowerMenuItem> {
+public class MeterQueryActivity extends BaseActivity implements View.OnClickListener, OnMenuItemClickListener<IconPowerMenuItem> {
     private Context mContext;
     private ArrayList<String> dirNameList = new ArrayList<>();
     private ArrayList<String> fileNameList = new ArrayList<>();
@@ -630,7 +630,7 @@ public class MeterQueryActivityNew extends BaseActivity implements View.OnClickL
 
         @Override
         public void handleMessage(Message msg) {
-            final MeterQueryActivityNew activity = (MeterQueryActivityNew) mWeakReference.get();
+            final MeterQueryActivity activity = (MeterQueryActivity) mWeakReference.get();
             if (activity != null) {
                 switch (msg.what) {
                     case MSG_UPDATE_PROGRESS:
@@ -1377,7 +1377,7 @@ public class MeterQueryActivityNew extends BaseActivity implements View.OnClickL
 
     private void showSelectTxtFileDialog(final ArrayList<String> fileNameList) {
         CommonSelectEmiAdapter selectFileAdapter = new CommonSelectEmiAdapter(fileNameList);
-        CommonSelectDialog.Builder builder = new CommonSelectDialog.Builder(MeterQueryActivityNew.this);
+        CommonSelectDialog.Builder builder = new CommonSelectDialog.Builder(MeterQueryActivity.this);
         builder.setTitle("请选择要查询的文件");
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
@@ -1955,7 +1955,7 @@ public class MeterQueryActivityNew extends BaseActivity implements View.OnClickL
         try {
             LoadStrategy loadStrategy = com.alibaba.fastjson.JSONObject.parseObject(tempArrayList.get(0).loadStrategyJson, LoadStrategy.class);
             if (loadStrategy != null && "翼迈".equals(loadStrategy.getCity())) {
-                Intent i = new Intent(MeterQueryActivityNew.this, CreateReaderExcelFileService.class);
+                Intent i = new Intent(MeterQueryActivity.this, CreateReaderExcelFileService.class);
                 i.putExtra(EmiConstants.EXTRA_FILE_NAME, tempArrayList.get(0).filename);
                 startService(i);
             }

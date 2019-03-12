@@ -25,7 +25,7 @@ import com.emi.emireading.common.DigitalTrans;
 import com.emi.emireading.core.BaseActivity;
 import com.emi.emireading.core.adapter.BaseEmiAdapter;
 import com.emi.emireading.core.adapter.EmiDividerItemDecoration;
-import com.emi.emireading.core.common.ThreadPoolManager;
+import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.config.EmiConstants;
 import com.emi.emireading.core.log.LogUtil;
 import com.emi.emireading.core.utils.EmiStringUtil;

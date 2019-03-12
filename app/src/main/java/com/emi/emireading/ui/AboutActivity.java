@@ -34,9 +34,10 @@ import com.emi.emireading.widget.view.dialog.multidialog.EmiMultipleProgressDial
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.emi.emireading.core.config.EmiConstants.APP_NAME;
 import static com.emi.emireading.core.config.UrlConstants.CHECK_VERSION;
 import static com.emi.emireading.core.crash.ErrorActivity.PARAMETER_APP_NAME;
-import static com.emi.emireading.update.DownLoadConstance.APP_NAME;
+import static com.emi.emireading.core.crash.ErrorActivity.PARAMETER_VERSION_CODE;
 
 /**
  * @author chx
@@ -114,7 +115,7 @@ public class AboutActivity extends AppCompatActivity {
     private void sendVersionRequest() {
         RequestParams requestParams = new RequestParams();
         String url = UrlConstants.HOST + CHECK_VERSION;
-        requestParams.put("versionCode", AppUtils.getVersionCode(getApplicationContext()) + "");
+        requestParams.put(PARAMETER_VERSION_CODE, AppUtils.getVersionCode(getApplicationContext()) + "");
         requestParams.put(PARAMETER_APP_NAME, APP_NAME);
         downloadHelper = VersionChecker
                 .getInstance()

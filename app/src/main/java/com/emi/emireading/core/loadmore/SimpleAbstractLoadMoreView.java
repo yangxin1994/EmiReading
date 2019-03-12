@@ -3,7 +3,15 @@ package com.emi.emireading.core.loadmore;
 
 import com.emi.emireading.R;
 
-public final class SimpleLoadMoreView extends LoadMoreView {
+
+/**
+ * @author :zhoujian
+ * @description : 上拉刷新和下拉加载控件
+ * @company :翼迈科技
+ * @date: 2017年07月25日上午 11:53
+ * @Email: 971613168@qq.com
+ */
+public final class SimpleAbstractLoadMoreView extends AbstractLoadMoreView {
 
     @Override
     public int getLayoutId() {

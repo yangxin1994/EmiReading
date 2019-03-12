@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.emi.emireading.EmiReadingApplication;
 import com.emi.emireading.R;
 import com.emi.emireading.core.BaseActivity;
-import com.emi.emireading.core.common.ThreadPoolManager;
+import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.config.EmiConstants;
 import com.emi.emireading.core.db.MyOperator;
 import com.emi.emireading.core.db.SQLiteHelper;

@@ -15,7 +15,7 @@ import com.emi.emireading.R;
 import com.emi.emireading.adpter.ChannelInfoEmiAdapter;
 import com.emi.emireading.core.BaseActivity;
 import com.emi.emireading.core.adapter.BaseEmiAdapter;
-import com.emi.emireading.core.common.ThreadPoolManager;
+import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.log.LogUtil;
 import com.emi.emireading.core.utils.ToastUtil;
 import com.emi.emireading.entities.UserInfo;
@@ -115,7 +115,7 @@ public class ChannelListActivity extends BaseActivity implements View.OnClickLis
                 intent.putExtra(EXTRA_CHANNEL_NUMBER, userInfo.channelNumber);
                 switch (skipTag) {
                     case SKIP_TAG_AUTO_READ_METER:
-                        intent.setClass(mContext, AutoReadMeterActivityNew.class);
+                        intent.setClass(mContext, AutoReadMeterActivity.class);
                         startActivityForResult(intent, INTENT_REFRESH_LIST);
                         break;
                     case SKIP_TAG_TASK_QUERY:

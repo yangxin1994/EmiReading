@@ -41,6 +41,7 @@ public class ClearFileActivity extends BaseActivity implements View.OnClickListe
     private MyOperator mytab = null;
     private SQLiteOpenHelper helper = null;
 
+
     @Override
     protected int getContentLayout() {
         return R.layout.activity_clear_data;
@@ -55,10 +56,11 @@ public class ClearFileActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void initUI() {
-        miv_clearDataBase = (MenuItemView) findViewById(R.id.miv_clearDataBase);
-        miv_clearResultFile = (MenuItemView) findViewById(R.id.miv_clearResultFile);
-        miv_clearReadingFile = (MenuItemView) findViewById(R.id.miv_clearReadingFile);
+        miv_clearDataBase = findViewById(R.id.miv_clearDataBase);
+        miv_clearResultFile = findViewById(R.id.miv_clearResultFile);
+        miv_clearReadingFile = findViewById(R.id.miv_clearReadingFile);
         findViewById(R.id.mivDataList).setOnClickListener(this);
+
 
     }
 
@@ -83,9 +85,10 @@ public class ClearFileActivity extends BaseActivity implements View.OnClickListe
                 deleteFile();
                 break;
             case R.id.miv_clearResultFile:
-                FileUtil.deleteDirectory(APK_PATH_DOWNLOAD);
+             FileUtil.deleteDirectory(APK_PATH_DOWNLOAD);
                 notifyFileExplore(APK_PATH_DOWNLOAD);
                 deleteCreateDirFile();
+
                 break;
             case R.id.mivDataList:
                 Intent intent = new Intent();
@@ -186,5 +189,9 @@ public class ClearFileActivity extends BaseActivity implements View.OnClickListe
         });
         builder.create().show();
     }
+
+
+
+
 
 }

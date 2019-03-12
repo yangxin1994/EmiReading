@@ -5,7 +5,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.emi.emireading.core.common.ThreadPoolManager;
+import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.config.EmiConfig;
 import com.emi.emireading.core.config.EmiConstants;
 import com.emi.emireading.core.log.LogUtil;
