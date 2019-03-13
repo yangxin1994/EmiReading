@@ -41,6 +41,8 @@ import static com.emi.emireading.core.crash.ErrorActivity.PARAMETER_VERSION_CODE
 
 /**
  * @author chx
+ * @modify by zhoujian
+ * 2018年09月20日上午 10:34
  */
 public class AboutActivity extends AppCompatActivity {
     private Button downButton;

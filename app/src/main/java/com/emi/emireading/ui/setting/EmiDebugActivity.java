@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.emi.emireading.R;
 import com.emi.emireading.core.BaseActivity;
-import com.emi.emireading.ui.debug.ChannelDebugActivityNew;
+import com.emi.emireading.ui.debug.ChannelDebugActivity;
 import com.emi.emireading.ui.debug.SingleMeterDebugActivity;
 
 /**
@@ -48,7 +48,7 @@ public class EmiDebugActivity extends BaseActivity implements View.OnClickListen
                 openActivity(mContext, SingleMeterDebugActivity.class);
                 break;
             case R.id.mivChannelDebug:
-                openActivity(mContext, ChannelDebugActivityNew.class);
+                openActivity(mContext, ChannelDebugActivity.class);
                 break;
             default:
                 break;

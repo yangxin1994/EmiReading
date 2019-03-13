@@ -296,6 +296,18 @@ public class MyOperator {
         this.db.close();
     }
 
+    /**
+     * 根据文件路径删除
+     *
+     * @param filePath
+     */
+    public void deleteByFilePath(String filePath) {
+        String sql = "DELETE FROM " + TABLE_NAME + " WHERE filePath like  '%" + filePath + "%'";
+        Object[] args = new Object[]{};
+        this.db.execSQL(sql, args);
+        this.db.close();
+    }
+
     public void deleteAll() {
 
         // String sql = "SELECT * FROM " + TABLE_NAME +" where useraddr like  '%" +uptownname+"%'";

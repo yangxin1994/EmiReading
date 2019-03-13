@@ -18,7 +18,6 @@ import com.emi.emireading.adpter.CommonSelectEmiAdapter;
 import com.emi.emireading.common.EmiUtils;
 import com.emi.emireading.core.BaseActivity;
 import com.emi.emireading.core.adapter.BaseEmiAdapter;
-import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.config.EmiConfig;
 import com.emi.emireading.core.config.EmiConstants;
 import com.emi.emireading.core.db.MyOperator;
@@ -26,6 +25,7 @@ import com.emi.emireading.core.db.SQLiteHelper;
 import com.emi.emireading.core.log.LogTool;
 import com.emi.emireading.core.log.LogUtil;
 import com.emi.emireading.core.request.response.ToastUtils;
+import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.utils.EmiStringUtil;
 import com.emi.emireading.core.utils.FileUtil;
 import com.emi.emireading.core.utils.ToastUtil;
@@ -48,7 +48,6 @@ import org.litepal.LitePal;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -62,12 +61,6 @@ import java.io.Writer;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.write.Label;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
 
 import static com.emi.emireading.core.config.EmiConfig.GBK;
 import static com.emi.emireading.core.config.EmiConfig.IS_GBK;
@@ -339,51 +332,7 @@ public class ModifyFileActivity extends BaseActivity implements View.OnClickList
     }
 
 
-    private void readFileExcel(String filePath) {
-        InputStream inputStream;
-        try {
-            inputStream = new FileInputStream(filePath);
-            Workbook book = Workbook.getWorkbook(inputStream);
-            String newFilePath = EmiConfig.DOWN_LOAD_PATH + "/" + selectUserInfo.filename + SUFFIX_EXCEL;
-            LogUtil.d(TAG, "newFilePath=" + newFilePath);
-            WritableWorkbook writableWorkbook = Workbook.createWorkbook(new File(newFilePath));
-            int sheetCount = book.getNumberOfSheets();
-            Sheet sheet;
-            WritableSheet copySheet;
-            Label label;
-            for (int index = 0; index < sheetCount; index++) {
-                // 每个页签创建一个Sheet对象
-                sheet = book.getSheet(index);
-                copySheet = writableWorkbook.createSheet(sheet.getName(), index);
-                // sheet.getRows()返回该页的总行数
-                for (int i = 0; i < sheet.getRows(); i++) {
-                    // sheet.getColumns()返回该页的总列数
-                    for (int j = 0; j < sheet.getColumns(); j++) {
-                        String cellInfo = sheet.getCell(j, i).getContents();
-                        // 将定义好的单元格添加到工作表中
-                        LogUtil.d(TAG, "cellInfo---->" + cellInfo);
-                        //                        cellInfo =   editMeterId(cellInfo,sheet,i);
-                        if (cellInfo.equals(selectUserInfo.accountnum)) {
-                            LogUtil.d(TAG, "当前j=" + j + "，当前i=" + i);
-                            for (int k = 0; k < sheet.getColumns(); k++) {
-                                if (selectUserInfo.meteraddr.equals(sheet.getCell(k, i).getContents())) {
-                                    LogUtil.d(TAG, "当前k=" + k + "，当前i=" + i);
-                                    cellInfo = "123456";
-                                }
-                            }
-                        }
-                        LogUtil.i(TAG, "cellInfo=" + cellInfo);
-                        label = new Label(j, i, cellInfo);
-                        copySheet.addCell(label);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.getStackTrace();
-        }
 
-
-    }
 
 
     private class CreateFileRunnable implements Runnable {

@@ -660,7 +660,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     /**
-     * 获取加载过的文件名
+     * 获取加载过的文件信息
      *
      * @return
      */
@@ -670,9 +670,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         List<SavedFileInfo> fileInfoList = LitePal.findAll(SavedFileInfo.class);
         for (SavedFileInfo savedFileInfo : fileInfoList) {
             if (FileUtil.getFileSuffix(savedFileInfo.savedFileName).contains(EmiConfig.CURRENT_SUFFIX)) {
-                tempFileList.add(savedFileInfo.savedFileName);
+                //如果原始文件存在,则添加
+                if (FileUtil.checkFileExsit(savedFileInfo.savedPath)) {
+                    tempFileList.add(savedFileInfo.savedFileName);
+                } else {
+                    //不存在就删除
+                    getSqOperator().deleteByFilePath(savedFileInfo.savedPath);
+                    savedFileInfo.delete();
+                }
             }
-            LogUtil.w("找到的文件名：" + savedFileInfo.savedFileName);
+            LogUtil.d("找到的文件名：" + savedFileInfo.savedFileName);
+            LogUtil.d("找到的文件名路径：" + savedFileInfo.savedPath);
         }
         return tempFileList;
     }

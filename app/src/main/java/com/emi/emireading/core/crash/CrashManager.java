@@ -81,6 +81,7 @@ public final class CrashManager {
 
     /**
      * 异常处理初始化
+     *
      * @param context
      */
     public static void init(Context context) {
@@ -91,18 +92,14 @@ public final class CrashManager {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                     LogUtil.e("API版本过低");
                 }
-
                 Thread.UncaughtExceptionHandler oldHandler = Thread.getDefaultUncaughtExceptionHandler();
-
                 if (oldHandler != null && oldHandler.getClass().getName().startsWith(CAOC_HANDLER_PACKAGE_NAME)) {
                     LogUtil.e("已经处理异常");
                 } else {
                     if (oldHandler != null && !oldHandler.getClass().getName().startsWith(DEFAULT_HANDLER_PACKAGE_NAME)) {
                         LogUtil.e("已经处理异常");
                     }
-
                     application = (Application) context.getApplicationContext();
-
                     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
                         @Override
                         public void uncaughtException(Thread thread, final Throwable throwable) {
@@ -444,6 +441,9 @@ public final class CrashManager {
     }
 
 
+    /**
+     * 结束当前进程
+     */
     private static void killCurrentProcess() {
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(10);

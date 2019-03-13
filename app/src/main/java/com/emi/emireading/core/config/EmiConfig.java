@@ -175,7 +175,7 @@ public class EmiConfig {
 
     public static int READING_DELAY;
     /**
-     * 自动补抄次数设置
+     * 自动补抄次数设置（默认为补抄1次,可以自己设置补抄次数）
      */
     public static int REPEAT_COUNT = 1;
 

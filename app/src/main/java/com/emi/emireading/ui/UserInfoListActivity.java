@@ -392,16 +392,15 @@ public class UserInfoListActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void finish() {
+        super.finish();
         Intent data = new Intent();
         if (skipTag == SKIP_TAG_AUTO_READ_METER) {
-            LogUtil.d(TAG, "修改的集合长度：" + editUserList.size());
             data.putExtra(EXTRA_USER_LIST, editUserList);
         } else {
-            LogUtil.e(TAG, "修改的集合长度：" + tempList.size());
             data.putExtra(EXTRA_USER_LIST, tempList);
         }
         setResult(RESULT_CODE_CHANNEL_DATA, data);
-        super.finish();
+
     }
 
     private void doSkipSingleDebugActivity(List<UserInfo> userInfoList, int position) {

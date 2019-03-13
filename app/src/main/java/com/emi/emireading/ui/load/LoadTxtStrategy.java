@@ -131,7 +131,7 @@ public class LoadTxtStrategy {
             userInfo.firmCode = "";
             userInfo.filename = mFileName;
             userInfo.dirname = dirName;
-            userInfo.filePath = emiFilePath;
+            userInfo.filePath = bookFilePath;
             userInfo.channel = "";
             for (int j = 0; j < userList555.size(); j++) {
                 if (userListBook.get(i).accountnum.trim().equalsIgnoreCase(userList555.get(j).accountnum.trim())) {

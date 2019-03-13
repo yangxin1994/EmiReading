@@ -7,19 +7,19 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.emi.emireading.R;
 import com.emi.emireading.adpter.SelectDeviceEmiAdapter;
@@ -30,78 +30,97 @@ import com.emi.emireading.core.adapter.BaseEmiAdapter;
 import com.emi.emireading.core.threadpool.ThreadPoolManager;
 import com.emi.emireading.core.config.EmiConstants;
 import com.emi.emireading.core.log.LogUtil;
+import com.emi.emireading.core.utils.EmiStringUtil;
 import com.emi.emireading.core.utils.ToastUtil;
 import com.emi.emireading.widget.view.dialog.CommonSelectDialog;
-import com.emi.emireading.widget.view.dialog.LoadingDialog;
+import com.emi.emireading.widget.view.dialog.multidialog.EmiMultipleProgressDialog;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 
 import static android.bluetooth.BluetoothAdapter.getDefaultAdapter;
-import static com.emi.emireading.core.config.EmiConstants.bluetoothSocket;
+import static com.emi.emireading.core.config.EmiConstants.IO_EXCEPTION;
+import static com.emi.emireading.core.config.EmiConstants.MSG_BLUETOOTH_CONNECT;
 
 /**
  * @author :zhoujian
- * @description : zj
+ * @description : 通道板调试
  * @company :翼迈科技
- * @date: 2017年11月03日下午 02:16
+ * @date 2018年05月31日上午 10:29
  * @Email: 971613168@qq.com
  */
 
 public class ChannelDebugActivity extends BaseActivity implements View.OnClickListener {
-    private static final int NO_EMI_DEVICE_CODE = 10;
-    private static final int CONNECT_SUCCESS_CODE = 3;
-    private static final int OpenBlueToothRequestCode = 1;
-    private static final int CONNECT_FAILED_CODE = 5;
-    private static final int EDIT_FINISH = 6;
-    private static final int MAX_TIME = 20000;
-    private static final int MIN_TIME = 3000;
-    private static final int EXECUTE_TIME = 1000;
-    private final int timeInterval = 1000;
+    private static final String TAG = "ChannelDebugActivity";
+    public BluetoothDevice bluetoothDevice = null;
     private Button btnConnect;
-    private Button btnReadChannel;
-    private BluetoothSocket socket;
-    public boolean isStop = false;
-    private byte[] _channelinfo;
-    private EditText etInput;
-    private boolean isConnect;
-    private boolean readFlag = false;
-    CountDownTimer countDownTimer;
-    byte[] cmd = {};
-    //蓝牙是否连接
-    public boolean btConnect = false;
-    private final static int INDEX_OUT = -1;
-    public BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    public BluetoothDevice device1 = null;
-    //修改通道号
-    private Button btnReviseChannel;
-    private TextView tvStatus;
-    private ReadCallBackRunnable mReadCallBackRunnable = null;
-    private EditText etDate;
-    private LoadingDialog dialog;
+    private EmiMultipleProgressDialog dialog;
     private Context mContext;
-    private String strHex = "";
-    String strChannelDate = "";
-    String strChannelNum = "";
+    private boolean isConnect;
+    private TextView tvStatus;
+    private Button btnReadChannel;
+    private Button btnEditChannel;
+    private BluetoothSocket socket;
+    private boolean isStop;
+    private StringBuffer callBackStringBuffer = new StringBuffer("");
+    private byte[] cmd = {};
     boolean breadChannel = false;
     boolean breadEdited = false;
-    public boolean isInterrupt = true;
+    private Disposable blueToothDisposable;
+    private Disposable dataReceiveDisposable;
+    private Disposable readAndEditDisposable;
+    /**
+     * 时间间隔(毫秒)
+     */
+    private static final int TIME_INTERVAL = 1000;
+    private static final int MSG_ERROR = -1;
+    /**
+     * 蓝牙已连接
+     */
+    private Handler handler = new MyHandler(this);
+
+    private int receiveCount;
+    private EditText etInputChannel;
+    private EditText etDate;
+    private int maxLengthSpecial = 8;
+    private int maxLengthNormal = 6;
+
+    /**
+     * 收到回调的次数
+     */
+    private int tempCount = -1;
+
+    private int mTag;
+
+    /**
+     * 读取或修改是否成功
+     */
+    private boolean isCallBackSuccess;
+
+    private final int TAG_READ_NORMAL = 1;
+
+    private final int TAG_READ_SPECIAL = 2;
+
+    private final int TAG_EDIT = 3;
+    private final static String FLAG_DATA_CODE_SPECIAL = "0189";
+    private final static String FLAG_DATA_CODE_NORMAL = "AA";
+    private String mChannel;
+    private String mDate;
+    private String mEditDate;
     private ImageView ivClear;
-    private Disposable mDisposable;
+    private String mEditChannel;
+
     @Override
     protected int getContentLayout() {
         return R.layout.activity_channel_debug;
@@ -114,270 +133,130 @@ public class ChannelDebugActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     protected void initUI() {
-        initView();
-        initDateInputListener();
+        btnConnect = findViewById(R.id.btnConnect);
+        btnReadChannel = findViewById(R.id.btnReadChannel);
+        btnEditChannel = findViewById(R.id.btnEditChannel);
+        etInputChannel = findViewById(R.id.etInputChannel);
+        tvStatus = findViewById(R.id.tvStatus);
+        etDate = findViewById(R.id.etDate);
+        ivClear = findViewById(R.id.ivClear);
     }
 
     @Override
     protected void initData() {
-
-    }
-
-    private void sendReadChannelCmd() {
-        if (isConnect) {
-            breadChannel = false;
-            breadEdited = true;
-            if (!EmiUtils.isNormalChannel()) {
-                //蓝牙指令
-                cmd = new byte[]{(byte) 0xFE, (byte) 0xFE, 0x68, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x42, 0x00, 0x31, 0x03, 0x01, (byte) 0x89, 0x01, 0x69, 0x16};
-            } else {
-                cmd = new byte[]{(byte) 0xFE, (byte) 0xFE, 0x6A, 0x10, 0x02, (byte) 0xAA, 0x01, 0x27, 0x16};
-            }
-            sendBTMessage(cmd);
-            btnReadChannel.setText("正在读取中...");
-        } else {
-            ToastUtil.showShortToast("请先连接蓝牙");
-        }
-    }
-
-    public void sendBTMessage(byte[] cmd) {
-        if (bluetoothSocket == null) {
-            return;
-        }
-        try {
-            OutputStream os = bluetoothSocket.getOutputStream();
-            os.write(cmd);
-            os.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void initView() {
-       /* btnConnect = (Button) findViewById(R.id.btn_connect);
-        etDate = (EditText) findViewById(R.id.et_date);
-        btnReadChannel = (Button) findViewById(R.id.btn_read_channel);
-        btnReviseChannel = (Button) findViewById(R.id.btn_revise_channel);
-        tvStatus = (TextView) findViewById(R.id.tv_status);
-        ivClear = (ImageView) findViewById(R.id.iv_clear);
-        etInput = (EditText) findViewById(R.id.et_input);
         btnConnect.setOnClickListener(this);
-        btnReviseChannel.setOnClickListener(this);
         btnReadChannel.setOnClickListener(this);
-        ivClear.setOnClickListener(this);*/
-        if (!EmiUtils.isNormalChannel()) {
-            setEditMaxLength(8);
-        } else {
-            setEditMaxLength(6);
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-         /*   case R.id.btn_connect:
-                if (!isConnect) {
-                    doConnectDevice();
-                } else {
-                    doDisConnect();
-                    showConnectSuccess();
-                    ToastUtils.showShortToast("蓝牙已断开");
-                }
-                break;
-            case R.id.btn_revise_channel:
-                readFlag = false;
-                countReadChannel();
-                editChannel();
-                break;
-            case R.id.btn_read_channel:
-                readFlag = false;
-                countReadChannel();
-                sendReadChannelCmd();
-                break;
-            case R.id.iv_clear:
-                clearChannel();
-                break;
-
-            default:
-                break;*/
-        }
-    }
-
-    private void editChannel() {
-        if (!(etInput.getText().toString().length() > 0)) {
-            ToastUtil.showShortToast("请输入通道板号！");
-            return;
-        }
-        if (isConnect) {
-            breadEdited = false;
-            breadChannel = true;
-            editChannelNum();
-            btnReviseChannel.setText("正在修改...");
-        } else {
-            Toast.makeText(ChannelDebugActivity.this, "请先连接蓝牙设备!!!", Toast.LENGTH_SHORT).show();
-        }
+        btnEditChannel.setOnClickListener(this);
+        ivClear.setOnClickListener(this);
+        initDateInputListener();
     }
 
 
-
-    private void editChannelNum() {
-        byte hexcheck = 0x00;
-        //前2
-        if (!EmiUtils.isNormalChannel()) {
-            cmd = new byte[]{(byte) 0xFE, (byte) 0xFE, (byte) 0xFE, (byte) 0xFE, 0x68, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                    0x01, 0x10, 0x04, 0x0A, 0x02, (byte) 0x89, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16};
-            String editbuf = etInput.getText().toString();
-            int a = editbuf.length();
-            if (a > 0) {
-                for (; a < 8; a++) {
-                    editbuf = "0" + editbuf;
-                }
-                byte[] srtbyte = {0, 0, 0, 0};
-                srtbyte = stringToBytes(getHexString(editbuf));
-
-                Calendar cal = Calendar.getInstance();
-                int year = cal.get(Calendar.YEAR);
-                year = year - 2000;
-                int month = cal.get(Calendar.MONTH) + 1;
-                int day = cal.get(Calendar.DAY_OF_MONTH);
-                year = (year / 10) * 16 + year % 10;
-                month = (month / 10) * 16 + month % 10;
-                day = (day / 10) * 16 + day % 10;
-                cmd[18] = srtbyte[3];
-                cmd[19] = srtbyte[2];
-                cmd[20] = srtbyte[1];
-                cmd[21] = srtbyte[0];
-                cmd[22] = (byte) day;
-                cmd[23] = (byte) month;
-                cmd[24] = (byte) year;
-                for (int k = 4; k <= 24; k++) {
-                    hexcheck += cmd[k];
-                }
-                cmd[25] = hexcheck;
-                sendBTMessage(cmd);
-            }
-        } else {
-            cmd = new byte[]{(byte) 0xFE, (byte) 0xFE, (byte) 0xFE, (byte) 0xFE, 0x6A, 0x10, 0x08, (byte) 0xAA, 0x02, 0x00,
-                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16};
-            String _editbuf = etInput.getText().toString();
-            int tdh_lenth = _editbuf.length();
-            if (tdh_lenth > 0) {
-                for (; tdh_lenth < 6; tdh_lenth++) {
-                    _editbuf = "0" + _editbuf;
-                }
-            }
-            byte[] tdh_hex = {0, 0, 0, 0, 0, 0};
-            for (int i = 0; i < tdh_hex.length; i++) {
-                try {
-                    tdh_hex[i] = (byte) Integer.parseInt(_editbuf.substring(i, i + 1));
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
+    /**
+     * 监听蓝牙连接情况
+     */
+    public void observeBlueToothConnection() {
+        doEventByInterval(TIME_INTERVAL, new Observer<Long>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                blueToothDisposable = d;
             }
 
-            for (int i = 0; i < tdh_hex.length; i++) {
-                tdh_hex[i] += 0x30;
-                //cmd[9+i] = tdh_hex[i];
-            }
-            for (int i = 5; i >= 0; i--) {
-                cmd[9 + i] = tdh_hex[5 - i];
-            }
-            for (int k = 4; k <= 14; k++) {
-                hexcheck += cmd[k];
-            }
-            cmd[15] = (byte) hexcheck;
-            sendBTMessage(cmd);
-        }
-    }
-
-    private void showEditFinish() {
-        readFlag = true;
-        ToastUtil.showShortToast("修改成功");
-        btnReviseChannel.setText("修改通道号");
-    }
-
-    private void setEditMaxLength(int maxLength) {
-        etDate.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
-    }
-
-
-    private MyHandler mHandler = new MyHandler(this);
-
-    private static class MyHandler extends Handler {
-        WeakReference<Activity> mWeakReference;
-        private MyHandler(Activity activity) {
-            mWeakReference = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            final ChannelDebugActivity activity = (ChannelDebugActivity) mWeakReference.get();
-            switch (msg.what) {
-                case CONNECT_SUCCESS_CODE:
-                   activity.doConnectSuccess();
-                    break;
-                case CONNECT_FAILED_CODE:
-                    activity.showDisConnect();
-                    break;
-                case 0:
-                    activity.showReadSuccess();
-                    break;
-                case EDIT_FINISH:
-                    activity.showEditFinish();
-                    break;
-                case INDEX_OUT:
-                    LogUtil.e(TAG,"INDEX_OUT");
-                    activity.showDisConnect();
+            @Override
+            public void onNext(Long aLong) {
+                if (socket == null || (!socket.isConnected())) {
+                    doConnectFailed();
                     ToastUtil.showShortToast("蓝牙已断开");
-                    break;
-                default:
-                    break;
+                    stopTimer(blueToothDisposable);
+                }
             }
+
+            @Override
+            public void onError(Throwable e) {
+                stopTimer(blueToothDisposable);
+            }
+
+            @Override
+            public void onComplete() {
+                stopTimer(blueToothDisposable);
+            }
+        });
+    }
+
+    private void connectBlueTooth() {
+        if (!isConnect) {
+            if (dialog != null) {
+                dialog.show();
+            } else {
+                showDialog("正在连接蓝牙...");
+            }
+            btnConnect.setText("正在连接...");
+            btnConnect.setBackgroundResource(R.drawable.bt_select_bg);
+            btnConnect.setTextColor(ContextCompat.getColor(mContext, R.color.white_small));
+            makeButtonEnable(false);
+            connectToBlueDevice();
+        } else {
+            doDisConnect();
+            ToastUtil.showShortToast("蓝牙已断开");
         }
     }
 
-    private void showReadSuccess() {
-        readFlag = true;
-        ToastUtil.showShortToast("读取成功");
-        btnReadChannel.setText("读取通道号");
-        etInput.setText(strChannelNum);
-        etDate.setText(strChannelDate);
-
+    private void doDisConnect() {
+        cancelTimers();
+        if (socket != null || EmiConstants.bluetoothSocket != null) {
+            isStop = true;
+            EmiConstants.bluetoothSocket = socket;
+            showDisconnect();
+            isConnect = false;
+            if (socket != null && socket.isConnected()) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    socket = null;
+                }
+            }
+            socket = null;
+        }
     }
 
-    private void clearChannel() {
-        etInput.setText("");
-        etInput.setHint("请输入通道号，并点击修改");
-        etDate.setText("");
-        ivClear.setVisibility(View.GONE);
+    private void doConnectFailed() {
+        isConnect = false;
+        makeButtonEnable(true);
+        stopTimer(blueToothDisposable);
+        showDisconnect();
+        closeDialog();
     }
+
+    private void showDialog(String text) {
+        dialog = EmiMultipleProgressDialog.create(mContext)
+                .setLabel(text)
+                .setCancellable(false)
+                .show();
+    }
+
+    private void closeDialog() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+    }
+
 
     private void makeButtonEnable(boolean b) {
         btnReadChannel.setEnabled(b);
-        btnReviseChannel.setEnabled(b);
+        btnEditChannel.setEnabled(b);
         btnConnect.setEnabled(b);
     }
 
-    private void initDateInputListener() {
-        etInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (etInput.getText().toString().trim().equals("")) {
-                    ivClear.setVisibility(View.GONE);
-                } else {
-                    ivClear.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+    private void showDisconnect() {
+        isConnect = false;
+        makeButtonEnable(true);
+        btnConnect.setBackgroundResource(R.drawable.btn_bg_red);
+        btnConnect.setText("蓝牙未连接");
+        tvStatus.setTextColor(ContextCompat.getColor(mContext, R.color.red_btn_bg_color));
+        tvStatus.setText("蓝牙未连接");
+        btnConnect.setTextColor(ContextCompat.getColor(mContext, R.color.white));
     }
 
     private void connectToBlueDevice() {
@@ -406,7 +285,9 @@ public class ChannelDebugActivity extends BaseActivity implements View.OnClickLi
                 if (emiDeviceArrayList.size() == 0) {
                     ToastUtil.showShortToast("没有配对抄表设备，请先配对");
                     closeDialog();
-                    return;
+                    btnConnect.setText("蓝牙未连接");
+                    makeButtonEnable(true);
+                    closeDialog();
                 } else if (emiDeviceArrayList.size() == Integer.MAX_VALUE) {
                     int emiDeviceIndex = getEmiDeviceIndex(emiDeviceArrayList);
                     if (emiDeviceIndex >= 0) {
@@ -438,7 +319,6 @@ public class ChannelDebugActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void onItemClick(BaseEmiAdapter adapter, View view, int position) {
                 connectByMac(emiDeviceArrayList.get(position));
-                countDownConnect();
                 deviceDialog.dismiss();
             }
         });
@@ -447,443 +327,560 @@ public class ChannelDebugActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void connectByMac(BluetoothDevice device) {
-        //得到BluetoothDevice对象,也就是说得到配对的蓝牙适配器
+        //得到BluetoothDevice对象
         //得到远程蓝牙设备的地址
         String address = device.getAddress();
         String name = device.getName();
-        LogUtil.w(TAG, "已执行3");
         if (EmiConstants.EMI_DEVICE_NAME.equals(name)) {
-            //EMI0001
             LogUtil.i(TAG, "MAC地址:" + address);
-            device1 = mBluetoothAdapter.getRemoteDevice(address);
-            ConnectThread connectThread = new ConnectThread();
-            connectThread.start();
+            bluetoothDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address);
+            ThreadPoolManager.EXECUTOR.execute(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                socket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(
+                                        UUID.fromString(EmiConstants.UUID));
+                                socket.connect();
+                                EmiConstants.bluetoothSocket = socket;
+                                if (EmiConstants.bluetoothSocket != null) {
+                                    LogUtil.w(TAG, "socket.isConnected() = " + socket.isConnected());
+                                }
+                                //蓝牙连接成功
+                                sendEmptyMsg(MSG_BLUETOOTH_CONNECT);
+                            } catch (IOException e) {
+                                LogUtil.e(TAG, "connectToBlueDevice()--->" + e.toString());
+                                sendErrorMsg("当前蓝牙设备可能关闭或被占用");
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+            );
         } else {
             ToastUtil.showShortToast("该设备不是翼迈抄表设备");
             closeDialog();
-            showDisConnect();
+            showDisconnect();
         }
     }
 
-
-    private void closeDialog() {
-        if (dialog != null) {
-            dialog.close();
-        }
-    }
-
-
-    private void showDisConnect() {
-        makeButtonEnable(true);
-        cancelTimer();
-        btnConnect.setBackgroundResource(R.drawable.btn_bg_red);
-        btnConnect.setText("蓝牙未连接");
-        tvStatus.setTextColor(getResourcesColor(R.color.red_btn_bg_color));
-        tvStatus.setText("蓝牙未连接");
-        isConnect = false;
-        closeDialog();
-        reset();
-        bluetoothSocket = null;
-    }
-
-
-
-    private void countDownConnect() {
-        CountDownTimer countDownTimer = new CountDownTimer(MAX_TIME, EXECUTE_TIME) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                LogUtil.i(TAG, "执行onTick");
-                if (dialog == null || !(dialog.isShowing())) {
-                    this.cancel();
-                    LogUtil.w(TAG, "计时器取消");
-                }
-            }
-
-            @Override
-            public void onFinish() {
-                if (dialog != null && dialog.isShowing()) {
-                    dialog.close();
-                    showDisConnect();
-                }
-                LogUtil.i(TAG, "countDownTimer--->onFinish");
-            }
-        };
-        countDownTimer.start();
-    }
-
-    private int getResourcesColor(int colorId) {
-        return ContextCompat.getColor(mContext, colorId);
-    }
-
-    private void cancelConnect() {
-        closeDialog();
-        showDisConnect();
-        makeButtonEnable(true);
-    }
-
-    private class ReadCallBackRunnable implements Runnable {
-        @Override
-        public void run() {
-            byte[] buffer = new byte[1024];
-            int bytes;
-            InputStream mmInStream = null;
-            try {
-                mmInStream = bluetoothSocket.getInputStream();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            if (!EmiUtils.isNormalChannel()) {
-                while (isInterrupt) {
-                    try {
-                        if ((bytes = mmInStream.read(buffer)) != -1) {
-                            byte[] buf_data = new byte[bytes];
-                            for (int i = 0; i < bytes; i++) {
-                                buf_data[i] = buffer[i];
-                            }
-                            strHex = strHex + DigitalTrans.byte2hex(buf_data);
-                            if (breadChannel == false) {
-                                if (strHex.length() >= 48) {
-                                    byte[] channelinfo = DigitalTrans.hex2byte(strHex);
-                                    int n = 0;
-                                    while (channelinfo[n++] != 0x68) {
-                                        if (n > 30) {
-                                            break;
-                                        }
-                                    }
-                                    if (n < 30) {
-                                        strChannelNum = "";
-                                        strChannelDate = "";
-                                        for (int l = 0; l < 4; l++) {
-                                            String str = DigitalTrans.algorismToHEXString(channelinfo[13 + n + l]);
-                                            strChannelNum = str + strChannelNum;
-                                        }
-
-                                        for (int l = 0; l < 3; l++) {
-                                            String str1 = DigitalTrans.algorismToHEXString(channelinfo[17 + n + l]);
-                                            strChannelDate = str1 + strChannelDate;
-                                        }
-
-                                        Message message = new Message();
-                                        message.what = 0;
-                                        mHandler.sendMessage(message);
-                                    }
-                                    strHex = "";
-                                    breadChannel = true;
-                                }
-                            }
-                            if (breadEdited == false) {
-                                if (strHex.length() >= 36) {
-                                    byte[] Meterinfo = DigitalTrans.hex2byte(strHex);
-                                    int m = 0;
-                                    while (Meterinfo[m++] != 0x68)
-                                        ;
-                                    String st = "" + m;
-                                    System.out.println(st);
-                                    //0x84
-                                    if (Meterinfo[8 + m] == -124) {
-                                        Message message = new Message();
-                                        message.what = 6;
-                                        mHandler.sendMessage(message);
-                                    }
-                                    strHex = "";
-                                    breadEdited = true;
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        LogUtil.e(TAG, "设备异常：" + e.toString());
-                        stopThread();
-                        sendMsg(INDEX_OUT);
-                        try {
-                            mmInStream.close();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                        break;
-                    }
-                }
-            } else {
-                strHex = "";//拼接byte数组
-                while (isInterrupt) {
-                    try {
-                        if ((bytes = mmInStream.read(buffer)) > 0) {
-                            byte[] buf_data = new byte[bytes];
-                            //-0x30
-                            byte[] re_buffer = new byte[bytes];
-                            for (int i = 0; i < bytes; i++) {
-                                buf_data[i] = buffer[i];
-                                re_buffer[i] = (byte) (buf_data[i] - 0x30);
-                            }
-                            strHex = strHex + DigitalTrans.byte2hex(re_buffer);
-                            re_buffer = null;
-                            if (breadChannel == false) {
-                                if (strHex.length() >= 30) {
-                                    _channelinfo = DigitalTrans.hex2byte(strHex);
-                                    int n = 0;
-                                    while (_channelinfo[n++] != 0x38) {
-                                        if (n > _channelinfo.length) {
-                                            break;
-                                        }
-                                    }
-                                    if (n < _channelinfo.length) {
-                                        strChannelNum = "";
-                                        for (int l = 0; l < 6; l++) {
-                                            if (7 + l < _channelinfo.length) {
-                                                String str = String.valueOf(_channelinfo[7 + l]);
-                                                strChannelNum = str + strChannelNum;
-                                            }
-                                        }
-                                        Message message = new Message();
-                                        message.what = 0;
-                                        mHandler.sendMessage(message);
-                                    }
-                                    strHex = "";
-                                    //                                    _channelinfo=null;//清空缓存
-                                    breadChannel = true;
-                                }
-                            }
-
-                            if (breadEdited == false) {
-                                LogUtil.i(TAG, "读取通道号回调");
-                                if (strHex.length() == 18) {
-                                    byte[] Meterinfo = DigitalTrans.hex2byte(strHex);
-                                    System.out.println(strHex);
-                                    int m = 0;
-                                    while (Meterinfo[m++] != 0x38) {
-                                        if (m > Meterinfo.length) {
-                                            break;
-                                        }
-                                    }
-                                    String st = "" + m;
-                                    System.out.println(st);
-                                    if (Meterinfo[4 + m] == -10) {
-                                        Message message = new Message();
-                                        message.what = 6;
-                                        mHandler.sendMessage(message);
-                                    }
-                                    strHex = "";
-                                    breadEdited = true;
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        sendMsg(INDEX_OUT);
-                        stopThread();
-                        LogUtil.e(TAG, "错误：" + getClass().getName() + "--->" + e.toString());
-                        isInterrupt = false;
-                        try {
-                            mmInStream.close();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    private void sendMsg(int what) {
-        mHandler.sendEmptyMessage(what);
+    private void sendEmptyMsg(int what) {
+        handler.sendEmptyMessage(what);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case OpenBlueToothRequestCode:
-                if (resultCode == RESULT_OK) {
-                    connectBlueTooth();
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnConnect:
+                connectBlueTooth();
+                break;
+            case R.id.btnReadChannel:
+                if (!isConnect) {
+                    ToastUtil.showShortToast("请先连接蓝牙");
+                    return;
                 }
+                clearReceiveData();
+                clearResult();
+                isCallBackSuccess = false;
+                sendReadChannelCmd();
+                listenReadAndEdit();
+                break;
+            case R.id.ivClear:
+                clearResult();
+                break;
+            case R.id.btnEditChannel:
+                if (!isConnect) {
+                    ToastUtil.showShortToast("请先连接蓝牙");
+                    return;
+                }
+                if (TextUtils.isEmpty(etInputChannel.getText().toString())) {
+                    ToastUtil.showShortToast("请输入要修改的通道号");
+                    return;
+                }
+                isCallBackSuccess = false;
+                clearReceiveData();
+                sendEditEmd();
+                clearResult();
+                listenReadAndEdit();
                 break;
             default:
                 break;
         }
     }
 
-    private void showConnectSuccess() {
-        btnConnect.setText("设备已连接");
-        btnConnect.setBackgroundColor(getResourcesColor(R.color.green));
-        makeButtonEnable(true);
-        isConnect = true;
-        tvStatus.setTextColor(getResourcesColor(R.color.green));
-        tvStatus.setText("蓝牙已连接");
-        closeDialog();
-    }
 
-    private void connectBlueTooth() {
-        if (!btConnect) {
-            if (dialog != null) {
-                dialog.show();
-            } else {
-                dialog = new LoadingDialog(mContext, "正在连接抄表蓝牙设备");
-                dialog.show();
+    private static class MyHandler extends Handler {
+        WeakReference<Activity> mWeakReference;
+
+        private MyHandler(Activity activity) {
+            mWeakReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            final ChannelDebugActivity activity = (ChannelDebugActivity) mWeakReference.get();
+            if (activity != null) {
+                switch (msg.what) {
+                    case MSG_BLUETOOTH_CONNECT:
+                        activity.doConnectSuccess();
+                        break;
+                    case MSG_ERROR:
+                        String errorMsg = (String) msg.obj;
+                        LogUtil.e("有异常：" + errorMsg);
+                        activity.doConnectFailed();
+                        ToastUtil.showShortToast(errorMsg);
+                        activity.closeDialog();
+                        break;
+                    default:
+                        break;
+                }
             }
-            btnConnect.setText("正在连接...");
-            btnConnect.setBackgroundResource(R.drawable.bt_select_bg);
-            btnConnect.setTextColor(getResources().getColor(R.color.white_small));
-            makeButtonEnable(false);
-            connectToBlueDevice();
-        } else {
-            doDisConnect();
         }
     }
+
+    private void cancelConnect() {
+        closeDialog();
+        showDisconnect();
+        makeButtonEnable(true);
+    }
+
+    private void doConnectSuccess() {
+        observeBlueToothConnection();
+        isConnect = true;
+        isStop = false;
+        closeDialog();
+        showConnectSuccess();
+        makeButtonEnable(true);
+        ThreadPoolManager.EXECUTOR.execute(new ReceiverDataRunnable());
+    }
+
+    private void sendErrorMsg(String errorMsg) {
+        Message message = handler.obtainMessage();
+        message.what = MSG_ERROR;
+        message.obj = errorMsg;
+        handler.sendMessage(message);
+    }
+
+    private void showConnectSuccess() {
+        btnConnect.setText("蓝牙已连接");
+        btnConnect.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+        btnConnect.setBackgroundResource(R.drawable.btn_bg_green_sel);
+        tvStatus.setTextColor(ContextCompat.getColor(mContext, R.color.green));
+        tvStatus.setText("蓝牙已连接");
+    }
+
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        isStop = true;
+        stopTimer(blueToothDisposable);
+        stopTimer(dataReceiveDisposable);
+        stopTimer(readAndEditDisposable);
         doDisConnect();
+        handler.removeCallbacksAndMessages(null);
+        super.onDestroy();
     }
 
 
-    private void doConnectDevice() {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
-            connectBlueTooth();
-        } else {
-            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(intent, OpenBlueToothRequestCode);
-        }
-    }
-
-    private void doDisConnect() {
-        try {
-            cancelTimer();
-            if (socket != null || EmiConstants.bluetoothSocket != null) {
-                isStop = true;
-                btConnect = false;
-                if (EmiConstants.bluetoothSocket != null) {
-                    try {
-                        bluetoothSocket.close();
-                    }catch (NullPointerException e){
-                        LogUtil.e(TAG, "蓝牙已关闭");
-                    }
-
-                    LogUtil.w(TAG, "蓝牙已关闭");
-                }
-                socket = null;
-                EmiConstants.bluetoothSocket = null;
-                showDisConnect();
-            }
-        } catch (IOException e) {
-            LogUtil.e(TAG, e.toString());
-        }
-    }
-
-    private class ConnectThread extends Thread {
+    private class ReceiverDataRunnable implements Runnable {
         @Override
         public void run() {
+            blueToothReceiveCallBack();
+        }
+    }
+
+
+    /**
+     * 获取通道板回传回来的指令
+     */
+    private void blueToothReceiveCallBack() {
+        byte[] buffer = new byte[1024];
+        int bytes;
+        InputStream mmInStream = null;
+        LogUtil.i(TAG, "线程已启动");
+        while (!isStop) {
             try {
-                socket = device1.createRfcommSocketToServiceRecord(
-                        UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-                socket.connect();
-                EmiConstants.bluetoothSocket = socket;
-                LogUtil.w(TAG, "socket.isConnected() = " + socket.isConnected());
-                Message message = new Message();
-                //蓝牙连接成功
-                message.what = CONNECT_SUCCESS_CODE;
-                mHandler.sendMessage(message);
+                if (EmiConstants.bluetoothSocket != null) {
+                    mmInStream = EmiConstants.bluetoothSocket.getInputStream();
+                }
             } catch (IOException e) {
-                LogUtil.e(TAG, "connectToBlueDevice()--->" + e.toString());
-                Message message = new Message();
-                message.what = CONNECT_FAILED_CODE;
-                mHandler.sendMessage(message);
                 e.printStackTrace();
-                interrupt();
+            }
+            if (mmInStream == null) {
+                return;
+            }
+            try {
+                if ((bytes = mmInStream.read(buffer)) > 0) {
+                    Log.w(TAG, "已执行");
+                    if (receiveCount == 0) {
+                        LogUtil.i(TAG, "表示已经第一次收到回调");
+                        listenBlueToothDataReceive();
+                    } else {
+                        LogUtil.d(TAG, "表示已经第" + receiveCount + "次收到回调");
+                    }
+                    receiveCount++;
+                    byte[] bufData = new byte[bytes];
+                    for (int i = 0; i < bytes; i++) {
+                        bufData[i] = buffer[i];
+                        Log.e(TAG, "返回的数据：" + buffer[i]);
+                        callBackStringBuffer.append(DigitalTrans.byteToHexString(buffer[i]));
+                    }
+                    Log.e(TAG, "返回的字符数据：" + callBackStringBuffer.toString());
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "错误：" + e.toString());
+                if (!e.toString().contains(IO_EXCEPTION)) {
+                    sendErrorMsg(e.toString());
+                }
+                isStop = true;
+                if (Thread.interrupted()) {
+                    stopThread();
+                } else {
+                    LogUtil.i("interrupted = false");
+                    stopThread();
+                }
+                try {
+                    mmInStream.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         }
     }
+
 
     private void stopThread() {
         try {
-            Thread.interrupted();
-            LogUtil.w("直接抛出异常");
+            isConnect = false;
             throw new InterruptedException("线程中断");
         } catch (InterruptedException e1) {
             e1.printStackTrace();
         }
     }
 
-    private void doConnectSuccess(){
-        interval(timeInterval);
-        showConnectSuccess();
-        if (EmiConstants.bluetoothSocket != null) {
-            mReadCallBackRunnable = new ReadCallBackRunnable();
-            ThreadPoolManager.EXECUTOR.execute(mReadCallBackRunnable);
+
+    private void sendReadChannelCmd() {
+        if (isConnect) {
+            breadChannel = false;
+            breadEdited = true;
+            if (!EmiUtils.isNormalChannel()) {
+                //蓝牙指令
+                mTag = TAG_READ_SPECIAL;
+                cmd = new byte[]{(byte) 0xFE, (byte) 0xFE, 0x68, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x42, 0x00, 0x31, 0x03, 0x01, (byte) 0x89, 0x01, 0x69, 0x16};
+            } else {
+                mTag = TAG_READ_NORMAL;
+                cmd = new byte[]{(byte) 0xFE, (byte) 0xFE, 0x6A, 0x10, 0x02, (byte) 0xAA, 0x01, 0x27, 0x16};
+            }
+            sendBTCmd(cmd);
+            btnReadChannel.setText("正在读取中...");
+        } else {
+            ToastUtil.showShortToast("请先连接蓝牙");
         }
     }
 
     /**
-     * 每隔milliseconds毫秒后执行next操作
+     * 监听蓝牙数据接收
+     */
+    private void listenBlueToothDataReceive() {
+        doEventByInterval(100, new Observer<Long>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                dataReceiveDisposable = d;
+            }
+
+            @Override
+            public void onNext(Long aLong) {
+                if (tempCount == receiveCount) {
+                    LogUtil.i(TAG, "接收完毕~");
+                    LogUtil.d("当前次数：" + receiveCount);
+                    LogUtil.i(TAG, "蓝牙返回的字符数据：" + callBackStringBuffer.toString());
+                    boolean isCorrect = checkCallbackDataCorrect(callBackStringBuffer.toString());
+                    if (isCorrect) {
+                        isCallBackSuccess = true;
+                        resolveCallBackData(mTag);
+                    }
+                    stopTimer(dataReceiveDisposable);
+                } else {
+                    LogUtil.d(TAG, "正在接收中...");
+                }
+                tempCount = receiveCount;
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                stopTimer(dataReceiveDisposable);
+            }
+
+            @Override
+            public void onComplete() {
+                stopTimer(dataReceiveDisposable);
+            }
+        });
+    }
+
+
+    private void clearReceiveData() {
+        receiveCount = 0;
+        tempCount = -1;
+        callBackStringBuffer.setLength(0);
+    }
+
+
+
+    /**
+     * 解析回调数据
      *
-     * @param milliseconds
+     * @param tag
      */
-    public void interval(long milliseconds) {
-        Observable.interval(milliseconds, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Long>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable disposable) {
-                        mDisposable = disposable;
-                    }
-
-                    @Override
-                    public void onNext(@NonNull Long number) {
-                        if (EmiConstants.bluetoothSocket != null && EmiConstants.bluetoothSocket.isConnected()) {
-                        } else {
-                            LogUtil.w(TAG,"蓝牙已断开");
-                            showDisConnect();
-                            ToastUtil.showShortToast("蓝牙已断开");
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        cancelTimer();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        cancelTimer();
-                    }
-                });
+    private void resolveCallBackData(int tag) {
+        switch (tag) {
+            case TAG_READ_NORMAL:
+                LogUtil.d("普通市场");
+                resolveChannelNormalCallback(callBackStringBuffer.toString());
+                showReadFinish();
+                break;
+            case TAG_READ_SPECIAL:
+                LogUtil.i("特殊市场");
+                resolveChannelSpecialCallBack(callBackStringBuffer.toString());
+                showReadFinish();
+                break;
+            case TAG_EDIT:
+                showEditFinish();
+                break;
+            default:
+                break;
+        }
     }
 
     /**
-     * 取消计时
+     * 特殊市场通道号回调解析
+     *
+     * @param callbackStr
      */
-    public void cancelTimer() {
-        if (mDisposable != null && !mDisposable.isDisposed()) {
-            mDisposable.dispose();
-            LogUtil.w("====定时器取消======");
+    private void resolveChannelSpecialCallBack(String callbackStr) {
+        int dataIndex = callbackStr.indexOf(FLAG_DATA_CODE_SPECIAL) + FLAG_DATA_CODE_SPECIAL.length() + 2;
+        String channel;
+        String date;
+        if (dataIndex > -1) {
+            channel = callbackStr.substring(dataIndex, dataIndex + 8);
+            date = callbackStr.substring(dataIndex + 8, dataIndex + 8 + 6);
+            List<String> channelInfoList = EmiStringUtil.splitStrToList(channel);
+            List<String> dateInfoList = EmiStringUtil.splitStrToList(date);
+            StringBuilder sbChannel = new StringBuilder("");
+            StringBuilder sbDate = new StringBuilder("");
+            for (int i = channelInfoList.size() - 1; i >= 0; i--) {
+                sbChannel.append(channelInfoList.get(i));
+            }
+            for (int i = dateInfoList.size() - 1; i >= 0; i--) {
+                sbDate.append(dateInfoList.get(i));
+            }
+            mChannel = sbChannel.toString();
+            mDate = sbDate.toString();
+        }
+    }
+
+    /**
+     * 普通市场通道号回调解析
+     *
+     * @param callbackStr
+     */
+    private void resolveChannelNormalCallback(String callbackStr) {
+        int dataIndex = callbackStr.indexOf(FLAG_DATA_CODE_NORMAL) + FLAG_DATA_CODE_NORMAL.length() + 2;
+        String channel;
+        String date;
+        if (dataIndex > -1) {
+            channel = callbackStr.substring(dataIndex, dataIndex + 12);
+            LogUtil.w(TAG, "channel:" + channel);
+            date = "";
+            List<String> channelInfoList = EmiStringUtil.splitStrToList(channel);
+            List<String> dateInfoList = EmiStringUtil.splitStrToList(date);
+            StringBuilder sbChannel = new StringBuilder("");
+            StringBuilder sbDate = new StringBuilder("");
+            String tempStr;
+            for (int i = channelInfoList.size() - 1; i >= 0; i--) {
+                tempStr = channelInfoList.get(i);
+                tempStr = tempStr.substring(tempStr.length() - 1, tempStr.length());
+                sbChannel.append(tempStr);
+            }
+            for (int i = dateInfoList.size() - 1; i >= 0; i--) {
+                sbDate.append(dateInfoList.get(i));
+            }
+            mChannel = sbChannel.toString();
+            mDate = sbDate.toString();
+        }
+    }
+
+    private void showReadFinish() {
+        makeButtonEnable(true);
+        ToastUtil.showShortToast("读取成功");
+        btnReadChannel.setText("读取通道号");
+        btnEditChannel.setText("修改通道号");
+        etInputChannel.setText(EmiStringUtil.formatNull(mChannel));
+        etDate.setText(EmiStringUtil.formatNull(mDate));
+    }
+
+    private void clearResult() {
+        etInputChannel.setText("");
+        etDate.setText("");
+        mChannel = "";
+        mDate = "";
+        ivClear.setVisibility(View.GONE);
+    }
+
+
+    private void initDateInputListener() {
+        if (EmiUtils.isNormalChannel()) {
+            etInputChannel.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLengthNormal)});
+        } else {
+            etInputChannel.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLengthSpecial)});
+        }
+        etInputChannel.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if ("".equals(etInputChannel.getText().toString().trim())) {
+                    ivClear.setVisibility(View.GONE);
+                } else {
+                    ivClear.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
+    private void listenReadAndEdit() {
+        stopTimer(readAndEditDisposable);
+        doEventCountDown(TIME_INTERVAL * 3, new Observer<Long>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                readAndEditDisposable = d;
+            }
+
+            @Override
+            public void onNext(Long o) {
+                LogUtil.d(TAG, "是否读取成功：" + isCallBackSuccess);
+                if (isCallBackSuccess) {
+                    stopTimer(readAndEditDisposable);
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                stopTimer(readAndEditDisposable);
+            }
+
+            @Override
+            public void onComplete() {
+                if (TAG_EDIT == mTag) {
+                    ToastUtil.showShortToast("修改失败");
+                } else {
+                    ToastUtil.showShortToast("读取失败");
+                }
+                showOperateFailed();
+                clearResult();
+                stopTimer(readAndEditDisposable);
+            }
+        });
+    }
+
+
+    private void sendEditEmd() {
+        byte hexcheck = 0x00;
+        btnEditChannel.setText("正在修改中...");
+        mTag = TAG_EDIT;
+        if (!EmiUtils.isNormalChannel()) {
+            etInputChannel.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLengthSpecial)});
+            cmd = new byte[]{(byte) 0xFE, (byte) 0xFE, (byte) 0xFE, (byte) 0xFE, 0x68, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x01, 0x10, 0x04, 0x0A, 0x02, (byte) 0x89, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16};
+            String editbuf = etInputChannel.getText().toString();
+            int a = editbuf.length();
+            if (a > 0) {
+                for (; a < maxLengthSpecial; a++) {
+                    editbuf = "0" + editbuf;
+                }
+                mEditChannel = editbuf;
+                byte[] strBytes;
+                strBytes = stringToBytes(getHexString(editbuf));
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                year = year - 2000;
+                int month = cal.get(Calendar.MONTH) + 1;
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+                StringBuilder stringBuilder = new StringBuilder("");
+                DecimalFormat df = new DecimalFormat("00");
+                stringBuilder.append(year);
+                stringBuilder.append(df.format(month));
+                stringBuilder.append(df.format(day));
+                year = (year / 10) * 16 + year % 10;
+                month = (month / 10) * 16 + month % 10;
+                day = (day / 10) * 16 + day % 10;
+                mEditDate = stringBuilder.toString();
+                cmd[18] = strBytes[3];
+                cmd[19] = strBytes[2];
+                cmd[20] = strBytes[1];
+                cmd[21] = strBytes[0];
+                cmd[22] = (byte) day;
+                cmd[23] = (byte) month;
+                cmd[24] = (byte) year;
+                for (int k = 4; k <= 24; k++) {
+                    hexcheck += cmd[k];
+                }
+                cmd[25] = hexcheck;
+                sendBTCmd(cmd);
+            }
+        } else {
+            cmd = new byte[]{(byte) 0xFE, (byte) 0xFE, (byte) 0xFE, (byte) 0xFE, 0x6A, 0x10, 0x08, (byte) 0xAA, 0x02, 0x00,
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16};
+            String editBuffer = etInputChannel.getText().toString();
+            int tdh_lenth = editBuffer.length();
+            mEditChannel = editBuffer;
+            if (tdh_lenth > 0) {
+                for (; tdh_lenth < maxLengthNormal; tdh_lenth++) {
+                    editBuffer = "0" + editBuffer;
+                }
+            }
+            byte[] tdh_hex = {0, 0, 0, 0, 0, 0};
+            for (int i = 0; i < tdh_hex.length; i++) {
+                try {
+                    tdh_hex[i] = (byte) Integer.parseInt(editBuffer.substring(i, i + 1));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            for (int i = 0; i < tdh_hex.length; i++) {
+                tdh_hex[i] += 0x30;
+            }
+            for (int i = 5; i >= 0; i--) {
+                cmd[9 + i] = tdh_hex[5 - i];
+            }
+            for (int k = 4; k <= 14; k++) {
+                hexcheck += cmd[k];
+            }
+            cmd[15] = hexcheck;
+            sendBTCmd(cmd);
         }
     }
 
 
-    private void countReadChannel() {
-        countDownTimer = new CountDownTimer(MIN_TIME, EXECUTE_TIME) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                    LogUtil.i(TAG, "执行onTick");
-                    if (readFlag){
-                        LogUtil.w(TAG, "计时器取消");
-                        this.cancel();
-                    }
-            }
-
-            @Override
-            public void onFinish() {
-                LogUtil.i(TAG, "onFinish");
-                ToastUtil.showShortToast("读取失败");
-                reset();
-            }
-        };
-        countDownTimer.start();
+    private void showEditFinish() {
+        makeButtonEnable(true);
+        btnReadChannel.setText("读取通道号");
+        btnEditChannel.setText("修改通道号");
+        ToastUtil.showShortToast("修改成功");
+        etInputChannel.setText(EmiStringUtil.formatNull(mEditChannel));
+        etDate.setText(EmiStringUtil.formatNull(mEditDate));
     }
 
-    private void reset(){
+    private void showOperateFailed() {
+        makeButtonEnable(true);
         btnReadChannel.setText("读取通道号");
+        btnEditChannel.setText("修改通道号");
+        etInputChannel.setText(EmiStringUtil.formatNull(mEditChannel));
+        etDate.setText(EmiStringUtil.formatNull(mEditDate));
     }
 }

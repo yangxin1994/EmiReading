@@ -64,7 +64,7 @@ import static com.emi.emireading.core.config.EmiConstants.ZERO;
 
 /**
  * @author :zhoujian
- * @description : 单表维护
+ * @description : 单表调试
  * @company :翼迈科技
  * @date 2018年07月11日下午 01:08
  * @Email: 971613168@qq.com

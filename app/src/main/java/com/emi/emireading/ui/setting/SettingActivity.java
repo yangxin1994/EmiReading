@@ -20,7 +20,7 @@ import com.emi.emireading.core.config.EmiConstants;
 import com.emi.emireading.core.utils.FileUtil;
 import com.emi.emireading.core.utils.ToastUtil;
 import com.emi.emireading.ui.AboutActivity;
-import com.emi.emireading.ui.debug.ChannelDebugActivityNew;
+import com.emi.emireading.ui.debug.ChannelDebugActivity;
 import com.emi.emireading.update.DownloadApk;
 import com.emi.emireading.widget.view.MenuItemView;
 import com.emi.emireading.widget.view.dialog.CustomDialog;
@@ -187,7 +187,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 deleteCreateDirFile();
                 break;
             case R.id.channel_board_debugging:
-                startActivity(new Intent(mContext, ChannelDebugActivityNew.class));
+                startActivity(new Intent(mContext, ChannelDebugActivity.class));
                 break;
             case R.id.miv_exportSetting:
                 openActivity(mContext, ExportSettingActivity.class);
@@ -428,7 +428,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     protected void onDestroy() {
-        DownloadApk.unregisterBroadcast(this);
         super.onDestroy();
     }
 

@@ -443,6 +443,9 @@ public class MeterQueryActivity extends BaseActivity implements View.OnClickList
         pop.setFocusable(true);
         //将window视图显示在myButton下面
         fileNameList = getTempNameList(getTempFileNameList());
+        for (String s : fileNameList) {
+            LogUtil.d("获取的目录文件：" + s);
+        }
         loadDirNameList();
         LogUtil.d("获取到的txt文件：" + dirNameList.size());
         popListView.setAdapter(new ListViewAdapter(mContext, dirNameList));

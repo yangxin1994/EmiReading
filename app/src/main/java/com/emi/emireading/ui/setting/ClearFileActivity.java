@@ -27,7 +27,7 @@ import static com.emi.emireading.core.config.EmiConfig.APK_PATH_DOWNLOAD;
 
 /**
  * @author :zhoujian
- * @description : 清空数据文件
+ * @description : 管理数据文件
  * @company :翼迈科技
  * @date: 2017年09月12日上午 11:02
  * @Email: 971613168@qq.com
