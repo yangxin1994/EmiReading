@@ -753,8 +753,8 @@ public class AutoReadMeterActivity extends BaseActivity implements View.OnClickL
                 meterInfo = callbackStr.substring(beginIndex, beginIndex + meterInfoLength);
                 meterData = callbackStr.substring(beginIndex + meterInfoLength + 12, beginIndex + meterInfoLength + 12 + 4);
             }
-            StringBuilder sbMeterInfo = new StringBuilder("");
-            StringBuilder sbMeterData = new StringBuilder("");
+            StringBuilder sbMeterInfo = new StringBuilder();
+            StringBuilder sbMeterData = new StringBuilder();
             List<String> meterInfoList = splitStrToList(meterInfo);
             List<String> meterDataList = splitStrToList(meterData);
             for (int i = meterInfoList.size() - 1; i >= 0; i--) {
@@ -820,7 +820,7 @@ public class AutoReadMeterActivity extends BaseActivity implements View.OnClickL
         if (dataIndex > -1) {
             channel = callbackStr.substring(dataIndex, dataIndex + 12);
             List<String> channelInfoList = EmiStringUtil.splitStrToList(channel);
-            StringBuilder sbChannel = new StringBuilder("");
+            StringBuilder sbChannel = new StringBuilder();
             String tempStr;
             for (int i = channelInfoList.size() - 1; i >= 0; i--) {
                 tempStr = channelInfoList.get(i);

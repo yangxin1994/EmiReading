@@ -1473,7 +1473,9 @@ public class MeterQueryActivity extends BaseActivity implements View.OnClickList
     }
 
     public void updateDialogTitle(String text) {
-        dialog.setLabel(text);
+        if (dialog != null) {
+            dialog.setLabel(text);
+        }
     }
 
     /**

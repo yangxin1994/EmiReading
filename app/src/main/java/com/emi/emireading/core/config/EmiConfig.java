@@ -18,7 +18,7 @@ public class EmiConfig {
     /**
      * 是否是debug模式
      */
-    public static boolean isDebug = false;
+    public static boolean isDebug = true;
     public static String RootPath = "";
     public static int MeterType;
     public static boolean isFilter;
@@ -67,16 +67,24 @@ public class EmiConfig {
      * 拍摄图片文件夹
      */
     public static String EMI_PHOTO_PATH;
+
+    /**
+     * 日志路径
+     */
+    public static String EMI_PATH_LOG;
     /**
      * 555文件夹路径
      */
     public static String EMI_MERGE_PATH;
+
+
     /**
      * 日志缓存大小
      */
     public static int CacheSize = 3 * 1024 * 1024;
     public static final String MERGE_FILE_DIR_NAME = "555MergeFiles";
     public static final String ROOT_PATH_NAME = "EMICB";
+
     public static final String NULL = "null";
     /**
      * 当前城市名称

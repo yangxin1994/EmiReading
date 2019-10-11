@@ -48,6 +48,7 @@ import org.litepal.LitePal;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -65,6 +66,7 @@ import java.util.List;
 import static com.emi.emireading.core.config.EmiConfig.GBK;
 import static com.emi.emireading.core.config.EmiConfig.IS_GBK;
 import static com.emi.emireading.core.config.EmiConfig.UTF;
+import static com.emi.emireading.core.config.EmiConstants.EMI_MERGE_FILE;
 import static com.emi.emireading.core.config.EmiConstants.ERROR_CODE;
 import static com.emi.emireading.core.config.EmiConstants.EXTRA_FILE_NAME;
 import static com.emi.emireading.core.config.EmiConstants.EXTRA_USER_ID;
@@ -127,6 +129,11 @@ public class ModifyFileActivity extends BaseActivity implements View.OnClickList
     private boolean mModifyChannelEnable;
     private boolean mModifyFirmCodeEnable;
     private EmiMultipleProgressDialog dialog;
+    private static final int MSG_TOAST = 2001;
+    /**
+     * 仅在合肥模式下使用
+     */
+    private String currentFileDirName = "";
 
     @Override
     protected int getContentLayout() {
@@ -170,7 +177,7 @@ public class ModifyFileActivity extends BaseActivity implements View.OnClickList
                 originalMeterId = selectUserInfo.meteraddr;
                 filePath = selectUserInfo.filePath;
                 LogUtil.d("加载的文件路径：" + filePath);
-                mUserName = EmiStringUtil.formatNull(selectUserInfo.username);
+                currentFileDirName = selectUserInfo.dirname;
                 userAddress = EmiStringUtil.formatNull(selectUserInfo.useraddr);
                 if (!TextUtils.isEmpty(selectUserInfo.loadStrategyJson) && EmiStringUtil.isJSONValid(selectUserInfo.loadStrategyJson)) {
                     mLoadStrategy = JSON.parseObject(selectUserInfo.loadStrategyJson, LoadStrategy.class);
@@ -332,9 +339,6 @@ public class ModifyFileActivity extends BaseActivity implements View.OnClickList
     }
 
 
-
-
-
     private class CreateFileRunnable implements Runnable {
         private String filePath;
 
@@ -450,6 +454,9 @@ public class ModifyFileActivity extends BaseActivity implements View.OnClickList
                     ToastUtils.showToastNormal("修改成功");
                     activity.closeDialog();
                     break;
+                case MSG_TOAST:
+                    ToastUtils.showToastNormal((String) msg.obj);
+                    break;
                 default:
                     break;
             }
@@ -469,6 +476,12 @@ public class ModifyFileActivity extends BaseActivity implements View.OnClickList
         mHandler.sendEmptyMessage(what);
     }
 
+    private void sendToastMsg(String msg) {
+        Message message = mHandler.obtainMessage();
+        message.what = MSG_TOAST;
+        message.obj = msg;
+        mHandler.sendMessage(message);
+    }
 
     private void doModify(final String filePath) {
         ThreadPoolManager.EXECUTOR.execute(new Runnable() {
@@ -476,7 +489,9 @@ public class ModifyFileActivity extends BaseActivity implements View.OnClickList
             public void run() {
                 switch (FileUtil.getFileSuffix(filePath)) {
                     case SUFFIX_TXT:
-                        doModifyTxt();
+                        String path555 = get555FilePath(filePath);
+                        LogUtil.i("555文件路径:" + path555);
+                        doModifyTxt(path555);
                         break;
                     case SUFFIX_EXCEL:
                     case SUFFIX_EXCEL_2007:
@@ -505,27 +520,20 @@ public class ModifyFileActivity extends BaseActivity implements View.OnClickList
             BufferedReader bufferedReader;
             try {
                 fis = new FileInputStream(filePath);
-                try {
-                    inputReader = new InputStreamReader(fis, "gbk");
-                    bufferedReader = new BufferedReader(inputReader);
-                    String lineTxt;
-                    try {
-                        while ((lineTxt = bufferedReader.readLine()) != null) {
-                            resultList.add(lineTxt);
-                            LogUtil.d(TAG, "lineTxt=" + lineTxt);
-                        }
-                        long endTime = System.currentTimeMillis();
-                        long time = endTime - startTime;
-                        LogUtil.d("当前线程id：" + Thread.currentThread().getId() + "已经执行结束" + "，消耗时间：" + time);
-                        LogUtil.d(TAG, "当前线程id：" + Thread.currentThread().getId() + "的txtList长度：" + resultList.size());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                inputReader = new InputStreamReader(fis, "gbk");
+                bufferedReader = new BufferedReader(inputReader);
+                String lineTxt;
+                while ((lineTxt = bufferedReader.readLine()) != null) {
+                    resultList.add(lineTxt);
+                    LogUtil.d(TAG, "lineTxt=" + lineTxt);
+                    long endTime = System.currentTimeMillis();
+                    long time = endTime - startTime;
+                    LogUtil.d("当前线程id：" + Thread.currentThread().getId() + "已经执行结束" + "，消耗时间：" + time);
+                    LogUtil.d(TAG, "当前线程id：" + Thread.currentThread().getId() + "的txtList长度：" + resultList.size());
                 }
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
+                sendToastMsg("修改失败，原因:" + e.toString());
             }
         }
         return resultList;
@@ -552,7 +560,7 @@ public class ModifyFileActivity extends BaseActivity implements View.OnClickList
             }
             Writer writer = new OutputStreamWriter(new FileOutputStream(filePath), encode);
             BufferedWriter bw = new BufferedWriter(writer);
-            StringBuilder stringBuilder = new StringBuilder("");
+            StringBuilder stringBuilder = new StringBuilder();
             for (String content : txtDataList) {
                 stringBuilder.append(content);
                 stringBuilder.append(NEW_LINE);
@@ -563,8 +571,10 @@ public class ModifyFileActivity extends BaseActivity implements View.OnClickList
             LogUtil.i(TAG, "写入成功！");
         } catch (Exception e) {
             LogUtil.e(TAG, "错误：" + e.toString());
+            sendToastMsg("写入失败:原因：" + e.toString());
         }
     }
+
 
     private void saveModifyInfo(FileEditInfo currentFilEditBean) {
         FileEditInfo fileEditInfo;
@@ -641,8 +651,9 @@ public class ModifyFileActivity extends BaseActivity implements View.OnClickList
             FileOutputStream fos = new FileOutputStream(exportFilePath);
             wb.write(fos);
             fos.close();
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             e.printStackTrace();
+            LogUtil.e(TAG, "exportModifyInfo()异常--->" + e.toString());
         }
     }
 
@@ -676,11 +687,13 @@ public class ModifyFileActivity extends BaseActivity implements View.OnClickList
 
     /**
      * 修改TXT文件
+     *
+     * @param file555Path 555文件路径
      */
-    private void doModifyTxt() {
+    private void doModifyTxt(String file555Path) {
         //先读取文本中的数据文件
         boolean isFind = false;
-        ArrayList<String> txtList = getTxtDataFromTxtFile(filePath);
+        ArrayList<String> txtList = getTxtDataFromTxtFile(file555Path);
         String[] lineArray;
         String currentUserId;
         //遍历每一行数据
@@ -708,7 +721,7 @@ public class ModifyFileActivity extends BaseActivity implements View.OnClickList
             originalChannel = getValue(etChannel);
             originalFirmCode = getValue(etFirmCode);
             saveModifyInfo(editInfo);
-            writeToFile(txtList, filePath);
+            writeToFile(txtList, file555Path);
             sendMsg(SUCCESS_CODE);
         } else {
             sendMsg(MSG_DATA_NOT_FOUND);
@@ -815,4 +828,24 @@ public class ModifyFileActivity extends BaseActivity implements View.OnClickList
         }
     }
 
+    /**
+     * 获取555文件路径
+     */
+    private String get555FilePath(String currentSelectFilePath) {
+        try {
+            //先尝试从表册文件目录中获取555文件路径
+            int txt555FileIndex = currentSelectFilePath.lastIndexOf(File.separator) + 1;
+            String mergePath = EmiConfig.EMI_MERGE_PATH + File.separator + currentFileDirName + File.separator + EMI_MERGE_FILE;
+            String file555Path = currentSelectFilePath.substring(0, txt555FileIndex) + EMI_MERGE_FILE;
+            if (FileUtil.checkFileExsit(mergePath)) {
+                return mergePath;
+            } else if (FileUtil.checkFileExsit(file555Path)) {
+                return file555Path;
+            }
+            return "";
+        } catch (Exception e) {
+            LogUtil.e("get555FilePath()异常----->" + e.toString());
+            return "";
+        }
+    }
 }

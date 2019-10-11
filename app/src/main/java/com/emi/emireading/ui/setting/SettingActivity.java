@@ -429,6 +429,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        DownloadApk.unregisterBroadcast(this);
     }
 
 
@@ -506,4 +507,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         loadUserSetting();
         super.onResume();
     }
+
+
 }

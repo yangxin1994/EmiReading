@@ -11,7 +11,7 @@ import org.litepal.crud.LitePalSupport;
  */
 @SuppressWarnings("unchecked")
 public class FileEditInfo extends LitePalSupport {
-    public String fileName;
+    public String fileName = "";
     public String originalUserId;
     public String originalMeterId;
     public String originalChannelNumber;
@@ -20,7 +20,7 @@ public class FileEditInfo extends LitePalSupport {
     public String newMeterId;
     public String newChannelNumber;
     public String newFirmCode;
-    public String userAddress;
+    public String userAddress = "";
 
     public String getUserName() {
         return userName;
@@ -30,7 +30,7 @@ public class FileEditInfo extends LitePalSupport {
         this.userName = userName;
     }
 
-    public String userName;
+    public String userName = "";
 
     public String getFileName() {
         return fileName;

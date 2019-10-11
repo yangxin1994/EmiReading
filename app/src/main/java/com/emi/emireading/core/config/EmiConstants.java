@@ -68,6 +68,7 @@ public class EmiConstants {
     public static final String EMI_RECEIVE_DIR = "EMIDJ";
     public static final String NEED_FILE_DIR = "翼迈抄表所需文件";
     public static final String GENERATE_DIR = "翼迈抄表生成文件";
+    public static final String EMI_DIR_LOG = "log";
     public static final String DOWN_LOAD = "download";
     public static final String PHOTO_DIR_NAME = "翼迈图片";
     public static final String TEMP_DIR = "temp";

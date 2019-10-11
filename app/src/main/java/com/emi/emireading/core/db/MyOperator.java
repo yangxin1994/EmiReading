@@ -536,6 +536,7 @@ public class MyOperator {
             yhxx.uploadState = result.getInt(result.getColumnIndex(UPLOAD_STATE_KEY));
             yhxx.channelNumber = result.getString(result.getColumnIndex("channelNumber"));
             yhxx.filePath = result.getString(result.getColumnIndex("filePath"));
+            yhxx.dirname =  result.getString(result.getColumnIndex("dirname"));
             yhxx.firmCode = result.getString(result.getColumnIndex("firmCode"));
             yhxx.waterId = result.getString(result.getColumnIndex("waterId"));
             yhxx.loadStrategyJson = result.getString(result.getColumnIndex("loadStrategyJson"));

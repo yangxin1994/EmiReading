@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import static com.emi.emireading.core.config.EmiConfig.DOWN_LOAD_PATH;
 import static com.emi.emireading.core.config.EmiConfig.EMI_MERGE_PATH;
+import static com.emi.emireading.core.config.EmiConfig.EMI_PATH_LOG;
 import static com.emi.emireading.core.config.EmiConfig.GeneratePath;
 import static com.emi.emireading.core.config.EmiConfig.MERGE_FILE_DIR_NAME;
 import static com.emi.emireading.core.config.EmiConfig.NeedFilePath;
@@ -32,6 +33,7 @@ import static com.emi.emireading.core.config.EmiConfig.ReceievePath;
 import static com.emi.emireading.core.config.EmiConfig.RootPath;
 import static com.emi.emireading.core.config.EmiConfig.TempPath;
 import static com.emi.emireading.core.config.EmiConstants.DOWN_LOAD;
+import static com.emi.emireading.core.config.EmiConstants.EMI_DIR_LOG;
 import static com.emi.emireading.core.config.EmiConstants.EMI_RECEIVE_DIR;
 import static com.emi.emireading.core.config.EmiConstants.GENERATE_DIR;
 import static com.emi.emireading.core.config.EmiConstants.NEED_FILE_DIR;
@@ -109,6 +111,7 @@ public class EmiReadingApplication extends LitePalApplication {
             DOWN_LOAD_PATH = RootPath + "/" + DOWN_LOAD;
             EmiConfig.EMI_PHOTO_PATH = RootPath + PHOTO_DIR_NAME;
             ReceievePath = Environment.getExternalStorageDirectory().getPath() + "/" + EMI_RECEIVE_DIR;
+            EMI_PATH_LOG = RootPath + File.separator + EMI_DIR_LOG;
             File destDir = new File(NeedFilePath);
             File generateDir = new File(GeneratePath);
             File tempDir = new File(TempPath);
@@ -116,6 +119,11 @@ public class EmiReadingApplication extends LitePalApplication {
             File downloadDir = new File(DOWN_LOAD_PATH);
             File mergeDir = new File(EMI_MERGE_PATH);
             File photoDir = new File(EmiConfig.EMI_PHOTO_PATH);
+            File logDir = new File(EMI_PATH_LOG);
+            if (!logDir.exists()) {
+                logDir.mkdirs();
+                notifyFileExplore(EMI_PATH_LOG);
+            }
             if (!destDir.exists()) {
                 destDir.mkdirs();
                 notifyFileExplore(NeedFilePath);
