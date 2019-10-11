@@ -30,6 +30,7 @@ import com.emi.emireading.entities.FileEditInfo;
 import com.emi.emireading.entities.FileEntity;
 import com.emi.emireading.entities.SavedFileInfo;
 import com.emi.emireading.entities.UserInfo;
+import com.emi.emireading.widget.view.dialog.loading.FrameLoadingDialog;
 
 import org.apache.commons.lang.StringUtils;
 import org.litepal.LitePal;
@@ -66,6 +67,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected Disposable baseDisposable;
     protected static String TAG;
     protected SQLiteHelper sqLiteHelper;
+    protected FrameLoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -719,5 +721,22 @@ public abstract class BaseActivity extends AppCompatActivity {
         return checkCs(checkArray, csNumber);
     }
 
+    public void showLoading(Context context,String msg) {
+        if(loadingDialog == null){
+            loadingDialog = new FrameLoadingDialog(context,msg);
+            loadingDialog.setCancelable(false);
+        }
+        if ( !loadingDialog.isShowing()) {
+            if (!TextUtils.isEmpty(msg)) {
+                loadingDialog.setLoadingText(msg);
+            }
+            loadingDialog.show();
+        }
+    }
 
+    public void closeLoading() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
+    }
 }

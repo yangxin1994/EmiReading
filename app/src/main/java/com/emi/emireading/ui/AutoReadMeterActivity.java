@@ -215,10 +215,7 @@ public class AutoReadMeterActivity extends BaseActivity implements View.OnClickL
         READING_DELAY = PreferenceUtils.getInt(PREF_READING_DELAY, 1000);
         EmiConfig.AUTO_READ_TYPE = EmiUtils.getAutoReadType();
         initAdapter();
-        if (READING_DELAY == 0) {
-            READING_DELAY = 800;
-        }
-        readingDelay = READING_DELAY;
+        resetDelayTime();
         titleView.setRightIconText("统计");
         titleView.setOnClickRightListener(new View.OnClickListener() {
             @Override
@@ -1101,7 +1098,12 @@ public class AutoReadMeterActivity extends BaseActivity implements View.OnClickL
                     clearReceiveData();
                     sendBTCmd(cmdReadMeter);
                     listenReadFailed();
-                    delays(readingDelay);
+                    if (i == 0) {
+                        //抄第一只表时 增加2秒延时
+                        delays(readingDelay + (ONE_SECOND*2));
+                    } else {
+                        delays(readingDelay);
+                    }
                     showReading(currentMeterId);
                     int count = 0;
                     int delayTime = 50;
@@ -1113,7 +1115,7 @@ public class AutoReadMeterActivity extends BaseActivity implements View.OnClickL
                         if (count > timeUp) {
                             LogUtil.w("超时时间：已执行");
                             isReadFinish = true;
-                            sendToastMsg("读表超时",false);
+                            sendToastMsg("读表超时", false);
                         }
                         LogUtil.d("当前已执行" + count + "次");
                     }
@@ -1578,6 +1580,13 @@ public class AutoReadMeterActivity extends BaseActivity implements View.OnClickL
                 userInfoList.remove(i);
             }
         }
+    }
+
+    private void resetDelayTime() {
+        if (READING_DELAY == 0) {
+            READING_DELAY = 800;
+        }
+        readingDelay = READING_DELAY;
     }
 
 }

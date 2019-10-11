@@ -18,7 +18,7 @@ public class EmiConfig {
     /**
      * 是否是debug模式
      */
-    public static boolean isDebug = true;
+    public static boolean isDebug = false;
     public static String RootPath = "";
     public static int MeterType;
     public static boolean isFilter;
